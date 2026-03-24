@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Water Tracker</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        #main-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .title-container { text-align: center; margin-bottom: 40px; }
+        h1 { margin: 0; font-size: 28px; font-weight: 700; color: #f2f2f7; }
+        p.subtitle { margin: 5px 0 0 0; color: #8e8e93; font-size: 14px; }
+
+        .bottle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 90px);
+            gap: 20px 40px;
+            justify-content: center;
+        }
+        
+        .bottle-wrap {
+            width: 90px;
+            height: 180px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .bottle-wrap:nth-child(5) {
+            grid-column: 1 / span 2;
+            justify-self: center;
+        }
+
+        .bottle-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* ΔΙΟΡΘΩΣΗ: Το animation του νερού */
+        .water-fill {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(200px); /* Ξεκινάει 200px κάτω, τελείως έξω από το μπουκάλι */
+        }
+        
+        .bottle-wrap.filled .water-fill {
+            transform: translateY(0px); /* Ανεβαίνει τέρμα πάνω, μέχρι το καπάκι */
+        }
+
+        .swipe-hint {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
+        }
+        .swipe-hint span { font-size: 12px; margin-top: 5px; color: #aeaeb2;}
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        #history-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 85vh;
+            background-color: #1c1c1e;
+            border-radius: 30px 30px 0 0;
+            z-index: 10;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        
+        #history-sheet.open {
+            transform: translateY(0);
+        }
+
+        .drag-handle {
+            width: 40px;
+            height: 5px;
+            background-color: #48484a;
+            border-radius: 3px;
+            margin: 15px auto;
+        }
+
+        .history-content {
+            padding: 20px 30px;
+            flex: 1;
+            overflow-y: auto;
+            touch-action: pan-y;
+        }
+        .history-content h2 { margin-top: 0; font-size: 22px; border-bottom: 1px solid #38383a; padding-bottom: 10px; }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { padding: 15px 0; border-bottom: 1px solid #2c2c2e; display: flex; justify-content: space-between; font-size: 18px; }
+        li .date { color: #f2f2f7; }
+        li .liters { color: #0a84ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <clipPath id="waterMask">
+                <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z"/>
+            </clipPath>
+        </defs>
+    </svg>
+
+    <div id="main-screen">
+        <div class="title-container">
+            <h1>Στόχος: 5 Λίτρα</h1>
+            <p class="subtitle">Άγγιξε ένα μπουκάλι</p>
+        </div>
+
+        <div class="bottle-grid" id="grid">
+            </div>
+
+        <div class="swipe-hint">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+            <span>Ιστορικό</span>
+        </div>
+    </div>
+
+    <div id="history-sheet">
+        <div class="drag-handle"></div>
+        <div class="history-content">
+            <h2>Ιστορικό</h2>
+            <ul id="history-list">
+                </ul>
+        </div>
+    </div>
+
+    <script>
+        // ΔΙΟΡΘΩΣΗ: Κλείσαμε το water-fill μέσα σε ένα Group (<g>) που έχει τη μάσκα.
+        const bottleHTML = `
+            <div class="bottle-wrap">
+                <svg class="bottle-svg" viewBox="0 0 100 200">
+                    <g clip-path="url(#waterMask)">
+                        <rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" />
+                    </g>
+                    
+                    <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+                    
+                    <rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/>
+                    
+                    <text x="50" y="120" fill="rgba(255,255,255,0.7)" font-size="20" font-weight="bold" font-family="sans-serif" text-anchor="middle">1L</text>
+                </svg>
+            </div>
+        `;
+
+        const grid = document.getElementById('grid');
+        for (let i = 0; i < 5; i++) grid.innerHTML += bottleHTML;
+
+        const bottles = document.querySelectorAll('.bottle-wrap');
+        const historyList = document.getElementById('history-list');
+
+        const getToday = () => new Date().toLocaleDateString('el-GR');
+        
+        let history = JSON.parse(localStorage.getItem('waterHistory')) || [];
+        let today = getToday();
+        let todayRecord = history.find(h => h.date === today);
+        let bottlesState = [];
+
+        if (!todayRecord) {
+            bottlesState = [false, false, false, false, false];
+            history.unshift({ date: today, liters: 0 });
+            saveData();
+        } else {
+            bottlesState = JSON.parse(localStorage.getItem('waterBottles')) || [false, false, false, false, false];
+            todayRecord = history.find(h => h.date === today);
+        }
+
+        bottlesState.forEach((isFilled, index) => {
+            if (isFilled) bottles[index].classList.add('filled');
+        });
+        renderHistory();
+
+        bottles.forEach((bottle, index) => {
+            bottle.addEventListener('click', () => {
+                bottlesState[index] = !bottlesState[index];
+                if (bottlesState[index]) {
+                    bottle.classList.add('filled');
+                } else {
+                    bottle.classList.remove('filled');
+                }
+
+                const totalLitersToday = bottlesState.filter(b => b === true).length;
+                let currentDay = history.find(h => h.date === today);
+                currentDay.liters = totalLitersToday;
+                
+                saveData();
+                renderHistory();
+            });
+        });
+
+        function saveData() {
+            localStorage.setItem('waterBottles', JSON.stringify(bottlesState));
+            localStorage.setItem('waterHistory', JSON.stringify(history));
+        }
+
+        function renderHistory() {
+            historyList.innerHTML = '';
+            history.forEach(item => {
+                const li = document.createElement('li');
+                const label = item.date === today ? 'Σήμερα' : item.date;
+                li.innerHTML = `<span class="date">${label}</span><span class="liters">${item.liters} L</span>`;
+                historyList.appendChild(li);
+            });
+        }
+
+        let startY = 0;
+        const mainScreen = document.getElementById('main-screen');
+        const sheet = document.getElementById('history-sheet');
+        const historyContent = document.querySelector('.history-content');
+
+        mainScreen.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
+        mainScreen.addEventListener('touchend', e => {
+            let endY = e.changedTouches[0].clientY;
+            if (startY - endY > 50) sheet.classList.add('open');
+        }, {passive: true});
+
+        sheet.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
+        sheet.addEventListener('touchend', e => {
+            let endY = e.changedTouches[0].clientY;
+            if (endY - startY > 50 && historyContent.scrollTop <= 0) {
+                sheet.classList.remove('open');
+            }
+        }, {passive: true});
+    </script>
+</body>
+</html>
