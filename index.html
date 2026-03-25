@@ -25,21 +25,14 @@
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         #settings-modal.open { opacity: 1; pointer-events: auto; }
-        
         .settings-box { background: #1c1c1e; padding: 30px; border-radius: 20px; text-align: center; width: 80%; }
-        .settings-box h2 { margin-top: 0; margin-bottom: 20px; }
-        .settings-box input { width: 100%; margin-bottom: 30px; accent-color: #0a84ff; }
-        .val-display { font-size: 24px; font-weight: bold; color: #0a84ff; margin-bottom: 20px; }
-        
-        .save-btn {
-            background: #0a84ff; color: #fff; border: none; padding: 12px 24px;
-            border-radius: 10px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer;
-        }
+        .settings-box input { width: 100%; margin: 20px 0; accent-color: #0a84ff; }
+        .save-btn { background: #0a84ff; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; width: 100%; }
 
         #swipe-container {
             display: flex; width: 100vw; height: 100vh;
             overflow-x: auto; scroll-snap-type: x mandatory;
-            scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
         }
         #swipe-container::-webkit-scrollbar { display: none; }
         
@@ -50,60 +43,40 @@
         }
 
         .title-container { text-align: center; position: absolute; top: 60px; width: 100%; }
-        h1 { margin: 0; font-size: 26px; font-weight: 700; color: #f2f2f7; }
-        p.subtitle { margin: 5px 0 0 0; color: #8e8e93; font-size: 14px; }
+        h1 { margin: 0; font-size: 26px; font-weight: 700; }
+        .subtitle { color: #8e8e93; font-size: 14px; margin-top: 5px; }
 
-        .bottle-grid {
-            display: grid; grid-template-columns: repeat(2, 90px);
-            gap: 20px 40px; justify-content: center; margin-top: 40px;
-        }
+        /* Grids */
+        .bottle-grid { display: grid; grid-template-columns: repeat(2, 90px); gap: 20px 40px; margin-top: 40px; }
         .bottle-wrap { width: 90px; height: 180px; cursor: pointer; position: relative; }
         .bottle-wrap.center-odd { grid-column: 1 / span 2; justify-self: center; }
 
-        .glass-grid {
-            display: grid; grid-template-columns: repeat(3, 70px);
-            gap: 15px 25px; justify-content: center; margin-top: 60px;
-        }
-        .glass-wrap { width: 70px; height: 100px; cursor: pointer; position: relative; }
+        .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 60px; }
+        .glass-wrap { width: 75px; height: 100px; cursor: pointer; position: relative; }
 
+        /* Pitcher */
         .pitcher-container { position: relative; width: 200px; height: 300px; margin-top: 40px; }
         #pitcher-wrap { width: 100%; height: 100%; cursor: ns-resize; touch-action: none; }
-        .pitcher-text {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 32px; font-weight: bold; color: rgba(255,255,255,0.9); text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            pointer-events: none;
-        }
-        .pitcher-ticks {
-            position: absolute; right: -40px; top: 0; height: 100%; display: flex; flex-direction: column-reverse; justify-content: space-between;
-        }
+        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; font-weight: bold; pointer-events: none; }
+        .pitcher-ticks { position: absolute; right: -45px; top: 0; height: 100%; display: flex; flex-direction: column-reverse; justify-content: space-between; }
         .tick { font-size: 12px; color: #8e8e93; display: flex; align-items: center; gap: 5px; }
-        .tick::before { content: ''; width: 10px; height: 2px; background: #48484a; }
+        .tick::before { content: ''; width: 8px; height: 2px; background: #48484a; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        .splash-drop {
-            position: absolute; top: 10px; left: 50%; width: 40px; height: 60px;
-            background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5;
-        }
-        @keyframes splash {
-            0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
-            100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; }
-        }
+        /* Splash */
+        .splash-drop { position: absolute; top: 10px; left: 50%; width: 40px; height: 60px; background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5; }
+        @keyframes splash { 0% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; } }
 
-        .dots { position: fixed; bottom: 80px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 10; pointer-events: none; }
+        .dots { position: fixed; bottom: 80px; width: 100vw; display: flex; justify-content: center; gap: 8px; pointer-events: none; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
         .dot.active { background: #f2f2f7; }
 
-        #history-sheet {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh;
-            background-color: #1c1c1e; border-radius: 30px 30px 0 0; z-index: 60;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-            display: flex; flex-direction: column; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-        }
+        #history-sheet { position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh; background-color: #1c1c1e; border-radius: 30px 30px 0 0; z-index: 60; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
         #history-sheet.open { transform: translateY(0); }
         .drag-handle { width: 40px; height: 5px; background-color: #48484a; border-radius: 3px; margin: 15px auto; }
-        .history-content { padding: 20px 30px; flex: 1; overflow-y: auto; touch-action: pan-y; }
+        .history-content { padding: 20px 30px; overflow-y: auto; height: 100%; }
     </style>
 </head>
 <body>
@@ -123,33 +96,33 @@
     <div id="settings-modal">
         <div class="settings-box">
             <h2>Στόχος Νερού</h2>
-            <div class="val-display"><span id="goal-val">5</span> Λίτρα</div>
+            <div id="goal-val" style="font-size: 24px; color: #0a84ff; font-weight: bold;">5</div>
             <input type="range" id="goal-slider" min="1" max="5" step="1" value="5">
             <button class="save-btn" id="save-settings">Αποθήκευση</button>
         </div>
     </div>
 
     <div id="swipe-container">
-        <div class="screen" id="screen-bottles">
+        <div class="screen">
             <div class="title-container">
                 <h1 id="title-bottles">Στόχος: 5 Λίτρα</h1>
-                <p class="subtitle">Άγγιξε ένα μπουκάλι (1L)</p>
+                <p class="subtitle">Άγγιξε οποιοδήποτε μπουκάλι (1L)</p>
             </div>
             <div class="bottle-grid" id="bottle-grid"></div>
         </div>
 
-        <div class="screen" id="screen-glasses">
+        <div class="screen">
             <div class="title-container">
-                <h1 id="title-glasses">Ποτήρια (350ml)</h1>
-                <p class="subtitle">Άγγιξε ένα ποτήρι</p>
+                <h1>Ποτήρια (350ml)</h1>
+                <p class="subtitle">Άγγιξε οποιοδήποτε ποτήρι</p>
             </div>
             <div class="glass-grid" id="glass-grid"></div>
         </div>
 
-        <div class="screen" id="screen-pitcher">
+        <div class="screen">
             <div class="title-container">
                 <h1>Κανάτα</h1>
-                <p class="subtitle">Σύρε πάνω/κάτω (ανά 350ml)</p>
+                <p class="subtitle">Σύρε πάνω/κάτω (±350ml)</p>
             </div>
             <div class="pitcher-container">
                 <div id="pitcher-wrap">
@@ -168,23 +141,18 @@
         </div>
     </div>
 
-    <div class="dots">
-        <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
-    </div>
+    <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
 
     <div id="history-sheet">
         <div class="drag-handle"></div>
         <div class="history-content">
-            <div class="history-header">
-                <h2>Ιστορικό</h2>
-                <button id="export-btn">CSV</button>
-            </div>
-            <ul id="history-list"></ul>
+            <h2 style="border-bottom: 1px solid #333; padding-bottom: 10px;">Ιστορικό</h2>
+            <ul id="history-list" style="list-style: none; padding: 0;"></ul>
         </div>
     </div>
 
     <script>
-        // --- State ---
+        // --- DATA STATE ---
         let goalLiters = parseInt(localStorage.getItem('waterGoal')) || 5;
         let history = JSON.parse(localStorage.getItem('waterHistory')) || [];
         const getToday = () => new Date().toLocaleDateString('el-GR');
@@ -192,160 +160,144 @@
         let todayRecord = history.find(h => h.date === today);
 
         if (!todayRecord) {
-            history.unshift({ date: today, ml: 0, bottleStates: [] });
-            todayRecord = history[0];
+            todayRecord = { date: today, bottleStates: Array(5).fill(false), glassStates: Array(15).fill(false), pitcherExtraMl: 0 };
+            history.unshift(todayRecord);
         }
-        
-        // Initial clean states
-        if (!todayRecord.bottleStates) todayRecord.bottleStates = Array(5).fill(false);
-        if (!todayRecord.glassStates) todayRecord.glassStates = Array(15).fill(false);
 
-        let currentMl = todayRecord.ml || 0;
+        function calculateTotalMl() {
+            let bMl = todayRecord.bottleStates.filter(s => s).length * 1000;
+            let gMl = todayRecord.glassStates.filter(s => s).length * 350;
+            return bMl + gMl + todayRecord.pitcherExtraMl;
+        }
 
         function saveData() {
-            todayRecord.ml = currentMl;
             localStorage.setItem('waterGoal', goalLiters);
             localStorage.setItem('waterHistory', JSON.stringify(history));
         }
 
-        // --- UI Builders ---
+        // --- UI RENDERERS ---
         function initUI() {
             document.getElementById('title-bottles').innerText = `Στόχος: ${goalLiters} Λίτρα`;
             
-            // 1. Bottles Grid
-            const bottleGrid = document.getElementById('bottle-grid');
-            bottleGrid.innerHTML = '';
+            // Bottles
+            const bGrid = document.getElementById('bottle-grid');
+            bGrid.innerHTML = '';
             for (let i = 0; i < goalLiters; i++) {
                 const wrap = document.createElement('div');
-                wrap.className = 'bottle-wrap';
-                if (goalLiters % 2 !== 0 && i === goalLiters - 1) wrap.classList.add('center-odd');
-                wrap.innerHTML = `
-                    <svg class="svg-obj" viewBox="0 0 100 200">
-                        <g clip-path="url(#bottleMask)">
-                            <rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)" />
-                        </g>
-                        <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
-                        <rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/>
-                        <text x="50" y="120" fill="rgba(255,255,255,0.7)" font-size="20" font-weight="bold" font-family="sans-serif" text-anchor="middle">1L</text>
-                    </svg>
-                `;
-                wrap.addEventListener('click', () => {
+                wrap.className = 'bottle-wrap' + (goalLiters % 2 !== 0 && i === goalLiters - 1 ? ' center-odd' : '');
+                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200"><g clip-path="url(#bottleMask)"><rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/></g><path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/><rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="120" fill="rgba(255,255,255,0.7)" font-size="20" font-weight="bold" text-anchor="middle">1L</text></svg>`;
+                wrap.onclick = () => {
                     todayRecord.bottleStates[i] = !todayRecord.bottleStates[i];
-                    currentMl += todayRecord.bottleStates[i] ? 1000 : -1000;
-                    if (currentMl < 0) currentMl = 0;
-                    if (todayRecord.bottleStates[i]) createSplash(wrap);
-                    saveData();
-                    updateUI();
-                });
-                bottleGrid.appendChild(wrap);
+                    if(todayRecord.bottleStates[i]) createSplash(wrap);
+                    saveData(); updateUI();
+                };
+                bGrid.appendChild(wrap);
             }
 
-            // 2. Glasses Grid
-            const glassGrid = document.getElementById('glass-grid');
-            glassGrid.innerHTML = '';
-            let maxGlasses = Math.ceil((goalLiters * 1000) / 350); 
-            for (let i = 0; i < maxGlasses; i++) {
+            // Glasses
+            const gGrid = document.getElementById('glass-grid');
+            gGrid.innerHTML = '';
+            let maxG = Math.ceil((goalLiters * 1000) / 350);
+            for (let i = 0; i < maxG; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'glass-wrap';
-                wrap.innerHTML = `
-                    <svg class="svg-obj" viewBox="0 0 100 150">
-                        <g clip-path="url(#glassMask)">
-                            <rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)" />
-                        </g>
-                        <path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
-                        <text x="50" y="90" fill="rgba(255,255,255,0.7)" font-size="16" font-weight="bold" font-family="sans-serif" text-anchor="middle">350</text>
-                    </svg>
-                `;
-                wrap.addEventListener('click', () => {
+                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 150"><g clip-path="url(#glassMask)"><rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)"/></g><path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="90" fill="rgba(255,255,255,0.7)" font-size="16" font-weight="bold" text-anchor="middle">350</text></svg>`;
+                wrap.onclick = () => {
                     todayRecord.glassStates[i] = !todayRecord.glassStates[i];
-                    currentMl += todayRecord.glassStates[i] ? 350 : -350;
-                    if (currentMl < 0) currentMl = 0;
-                    saveData();
-                    updateUI();
-                });
-                glassGrid.appendChild(wrap);
+                    saveData(); updateUI();
+                };
+                gGrid.appendChild(wrap);
             }
 
-            const pitcherTicks = document.getElementById('pitcher-ticks');
-            pitcherTicks.innerHTML = '';
+            // Ticks
+            const ticks = document.getElementById('pitcher-ticks');
+            ticks.innerHTML = '';
             for(let i=0; i<=goalLiters; i++) {
-                const tick = document.createElement('div');
-                tick.className = 'tick'; tick.innerText = `${i}L`;
-                pitcherTicks.appendChild(tick);
+                const t = document.createElement('div'); t.className = 'tick'; t.innerText = i+'L';
+                ticks.appendChild(t);
             }
         }
 
-        // --- Sync Update ---
         function updateUI() {
-            // Update Bottles (Independent view - Toggle based)
+            const total = calculateTotalMl();
+            
+            // Sync Bottles (Individual)
             document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => {
                 rect.style.transform = todayRecord.bottleStates[i] ? 'translateY(0px)' : 'translateY(200px)';
             });
 
-            // Update Glasses (Linear view - Sync with currentMl)
+            // Sync Glasses (Individual)
             document.querySelectorAll('#glass-grid .water-fill').forEach((rect, i) => {
-                let fillMl = Math.max(0, Math.min(350, currentMl - (i * 350)));
-                let translateY = 150 - ((fillMl / 350) * 150);
-                rect.style.transform = `translateY(${translateY}px)`;
+                rect.style.transform = todayRecord.glassStates[i] ? 'translateY(0px)' : 'translateY(150px)';
             });
 
-            // Update Pitcher (Linear view)
-            let maxPitcherMl = goalLiters * 1000;
-            let pPercent = Math.min(1, currentMl / maxPitcherMl);
+            // Sync Pitcher (Linear)
+            let pPercent = Math.min(1, total / (goalLiters * 1000));
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
-            document.getElementById('pitcher-text').innerText = `${(currentMl / 1000).toFixed(1)} L`;
+            document.getElementById('pitcher-text').innerText = (total / 1000).toFixed(1) + ' L';
 
-            const historyList = document.getElementById('history-list');
-            historyList.innerHTML = '';
-            history.forEach(item => {
+            // History
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            history.forEach(h => {
+                // Υπολογισμός ml για παλαιότερα records
+                let sum = h.ml || 0;
+                if(h.bottleStates) sum = (h.bottleStates.filter(s=>s).length * 1000) + (h.glassStates.filter(s=>s).length * 350) + (h.pitcherExtraMl || 0);
                 const li = document.createElement('li');
-                li.innerHTML = `<span>${item.date === today ? 'Σήμερα' : item.date}</span><span style="color:#0a84ff; font-weight:bold">${(item.ml/1000).toFixed(1)} L</span>`;
-                historyList.appendChild(li);
+                li.style.cssText = "display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #222;";
+                li.innerHTML = `<span>${h.date === today ? 'Σήμερα' : h.date}</span><span style="color:#0a84ff; font-weight:bold">${(sum/1000).toFixed(1)} L</span>`;
+                list.appendChild(li);
             });
         }
 
-        // --- Helpers ---
+        // --- INTERACTION ---
         function createSplash(el) {
             setTimeout(() => {
-                for (let i = 0; i < 6; i++) { 
-                    const d = document.createElement('div');
-                    d.classList.add('splash-drop');
-                    const tx = (Math.random() - 0.5) * 300; 
-                    const ty = -(Math.random() * 180 + 80); 
-                    d.style.setProperty('--tx', `${tx}px`);
-                    d.style.setProperty('--ty', `${ty}px`);
-                    const dur = 0.6 + Math.random() * 0.5;
+                for (let i = 0; i < 6; i++) {
+                    const d = document.createElement('div'); d.className = 'splash-drop';
+                    const tx = (Math.random() - 0.5) * 350, ty = -(Math.random() * 200 + 100);
+                    d.style.setProperty('--tx', tx+'px'); d.style.setProperty('--ty', ty+'px');
+                    const dur = 0.7 + Math.random() * 0.5;
                     d.style.animation = `splash ${dur}s ease-out forwards`;
-                    el.appendChild(d);
-                    setTimeout(() => d.remove(), dur * 1000);
+                    el.appendChild(d); setTimeout(() => d.remove(), dur * 1000);
                 }
-            }, 350); 
+            }, 350);
         }
 
-        // Drag Pitcher (Linear control)
-        let isDragging = false, startY = 0, startMl = 0;
+        let isDrag = false, sY = 0, startExtra = 0;
         const pWrap = document.getElementById('pitcher-wrap');
-        pWrap.addEventListener('touchstart', e => { isDragging = true; startY = e.touches[0].clientY; startMl = currentMl; }, {passive:true});
-        pWrap.addEventListener('touchmove', e => {
-            if(!isDragging) return;
-            let steps = Math.round((startY - e.touches[0].clientY) / 20);
-            currentMl = Math.max(0, startMl + (steps * 350));
-            saveData(); updateUI();
-        });
-        pWrap.addEventListener('touchend', () => isDragging = false);
+        pWrap.ontouchstart = e => { isDrag = true; sY = e.touches[0].clientY; startExtra = todayRecord.pitcherExtraMl; };
+        pWrap.ontouchmove = e => {
+            if(!isDrag) return;
+            let delta = Math.round((sY - e.touches[0].clientY) / 25);
+            todayRecord.pitcherExtraMl = startExtra + (delta * 350);
+            updateUI();
+        };
+        pWrap.ontouchend = () => { isDrag = false; saveData(); };
 
         // Settings
-        const modal = document.getElementById('settings-modal'), slider = document.getElementById('goal-slider'), val = document.getElementById('goal-val');
-        document.getElementById('open-settings').onclick = () => { slider.value = goalLiters; val.innerText = goalLiters; modal.classList.add('open'); };
-        slider.oninput = e => val.innerText = e.target.value;
-        document.getElementById('save-settings').onclick = () => { 
-            goalLiters = parseInt(slider.value); 
-            todayRecord.bottleStates = Array(goalLiters).fill(false);
-            saveData(); modal.classList.remove('open'); initUI(); updateUI(); 
+        const mod = document.getElementById('settings-modal'), sli = document.getElementById('goal-slider'), val = document.getElementById('goal-val');
+        document.getElementById('open-settings').onclick = () => { sli.value = goalLiters; val.innerText = goalLiters; mod.classList.add('open'); };
+        sli.oninput = e => val.innerText = e.target.value;
+        document.getElementById('save-settings').onclick = () => {
+            goalLiters = parseInt(sli.value);
+            // Reset states αν ο στόχος μειώθηκε
+            todayRecord.bottleStates = todayRecord.bottleStates.slice(0, goalLiters);
+            while(todayRecord.bottleStates.length < goalLiters) todayRecord.bottleStates.push(false);
+            saveData(); mod.classList.remove('open'); initUI(); updateUI();
         };
 
-        const swipe = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
-        swipe.onscroll = () => { let idx = Math.round(swipe.scrollLeft / window.innerWidth); ds.forEach((d, i) => d.classList.toggle('active', i === idx)); };
+        // Swipe Dots
+        const sc = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
+        sc.onscroll = () => { let i = Math.round(sc.scrollLeft / window.innerWidth); ds.forEach((d, k) => d.classList.toggle('active', k === i)); };
+
+        // History Swipe
+        let hSY = 0;
+        document.body.ontouchstart = e => hSY = e.touches[0].clientY;
+        document.body.ontouchend = e => {
+            if(hSY - e.changedTouches[0].clientY > 70 && !mod.classList.contains('open')) document.getElementById('history-sheet').classList.add('open');
+            if(e.changedTouches[0].clientY - hSY > 70) document.getElementById('history-sheet').classList.remove('open');
+        };
 
         initUI(); updateUI();
     </script>
