@@ -57,20 +57,21 @@
         .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 80px; }
         .glass-wrap { width: 75px; height: 100px; cursor: pointer; position: relative; }
 
-        /* Pitcher Screen */
-        .pitcher-container { position: relative; width: 100%; height: 400px; display: flex; justify-content: center; align-items: center; padding-right: 90px; }
+        /* Pitcher Container - centered pitcher */
+        .pitcher-container { position: relative; width: 100%; height: 420px; display: flex; justify-content: center; align-items: center; }
         #pitcher-wrap { width: 220px; height: 300px; position: relative; pointer-events: none; }
         .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
-        /* Μεγαλύτερος Slider σε ύψος και πλάτος */
+        /* MEGA SLIDER: Δεξιά άκρη, μέγιστο ύψος */
         #pitcher-drag-zone { 
             position: absolute; 
-            right: 10px; 
-            top: 115px;    /* Ακριβώς κάτω από τον τίτλο */
-            bottom: 75px;  /* Μέχρι την αρχή του ιστορικού */
-            width: 110px;  /* Πιο φαρδύ για καλύτερη αίσθηση */
+            right: 0; 
+            top: 130px;    /* Κάτω από τον τίτλο */
+            bottom: 75px;  /* Μέχρι την καρτέλα ιστορικού */
+            width: 90px;   /* Ελαφρώς μικρότερο πλάτος για να μη βρίσκει την κανάτα */
             background: #1c1c1e; 
-            border-radius: 30px;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
             display: flex; 
             flex-direction: column-reverse; 
             justify-content: space-between; 
@@ -78,18 +79,15 @@
             touch-action: none; 
             padding: 40px 0;
             z-index: 10;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.6);
+            box-shadow: -4px 0 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.6);
         }
-        .tick { font-size: 11px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
-        .tick::after { content: ''; width: 15px; height: 1px; background: #48484a; }
+        .tick { font-size: 11px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .tick::after { content: ''; width: 12px; height: 1px; background: #48484a; }
         .tick.major { color: #8e8e93; font-weight: 800; }
-        .tick.major::after { width: 25px; height: 2px; background: #636366; }
+        .tick.major::after { width: 20px; height: 2px; background: #636366; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        .splash-drop { position: absolute; top: 10px; left: 50%; width: 40px; height: 60px; background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5; }
-        @keyframes splash { 0% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; } }
 
         .dots { position: fixed; bottom: 85px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 5; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
@@ -158,14 +156,6 @@
 
     <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
 
-    <div id="history-sheet">
-        <div class="history-header-tab" id="history-tab">
-            <div class="drag-handle"></div>
-            <div class="tab-label">Ιστορικό</div>
-        </div>
-        <div class="history-content" id="history-list-container"></div>
-    </div>
-
     <script>
         const B_STEP = 750;
         const G_STEP = 350;
@@ -198,7 +188,7 @@
                 wrap.onclick = () => {
                     let threshold = (i + 1) * B_STEP;
                     if (currentMl >= threshold) currentMl = Math.max(0, threshold - B_STEP);
-                    else { currentMl = threshold; createSplash(wrap); }
+                    else currentMl = threshold;
                     saveData(); updateUI();
                 };
                 bGrid.appendChild(wrap);
@@ -247,31 +237,8 @@
             let pPercent = Math.min(1, total / goalMl);
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
             document.getElementById('pitcher-text').innerText = total + ' ml';
-
-            const container = document.getElementById('history-list-container');
-            container.innerHTML = '';
-            history.forEach(h => {
-                const div = document.createElement('div');
-                div.style.cssText = "display:flex; justify-content:space-between; padding:18px 0; border-bottom:1px solid #2c2c2e; font-size:17px;";
-                div.innerHTML = `<span>${h.date === today ? 'Σήμερα' : h.date}</span><span style="color:#0a84ff; font-weight:bold">${h.ml || 0} ml</span>`;
-                container.appendChild(div);
-            });
         }
 
-        function createSplash(el) {
-            setTimeout(() => {
-                for (let i = 0; i < 6; i++) {
-                    const d = document.createElement('div'); d.className = 'splash-drop';
-                    const tx = (Math.random() - 0.5) * 350, ty = -(Math.random() * 200 + 100);
-                    d.style.setProperty('--tx', tx+'px'); d.style.setProperty('--ty', ty+'px');
-                    const dur = 0.7 + Math.random() * 0.5;
-                    d.style.animation = `splash ${dur}s ease-out forwards`;
-                    el.appendChild(d); setTimeout(() => d.remove(), dur * 1000);
-                }
-            }, 350);
-        }
-
-        // --- IMPROVED VERTICAL DRAG LOGIC ---
         let isDrag = false;
         const dragZone = document.getElementById('pitcher-drag-zone');
         
@@ -288,7 +255,6 @@
             updateUI();
         }
 
-        // Settings
         const mod = document.getElementById('settings-modal'), sli = document.getElementById('goal-slider'), val = document.getElementById('goal-val');
         document.getElementById('open-settings').onclick = () => { sli.value = goalMl; val.innerText = goalMl; mod.classList.add('open'); };
         sli.oninput = e => val.innerText = e.target.value;
@@ -296,14 +262,6 @@
 
         const sc = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
         sc.onscroll = () => { let i = Math.round(sc.scrollLeft / window.innerWidth); ds.forEach((d, k) => d.classList.toggle('active', k === i)); };
-
-        let sheet = document.getElementById('history-sheet'), hSY = 0;
-        document.getElementById('history-tab').ontouchstart = e => hSY = e.touches[0].clientY;
-        document.getElementById('history-tab').ontouchend = e => {
-            let endY = e.changedTouches[0].clientY;
-            if(hSY - endY > 40) sheet.classList.add('open');
-            else if(endY - hSY > 40) sheet.classList.remove('open');
-        };
 
         initUI(); updateUI();
     </script>
