@@ -71,8 +71,8 @@
             position: absolute;
             top: 10px; 
             left: 50%;
-            width: 16px; /* Αύξηση από 6px σε 10px */
-            height: 24px; /* Αύξηση από 10px σε 16px */
+            width: 40px; /* Αύξηση από 6px σε 10px */
+            height: 60px; /* Αύξηση από 10px σε 16px */
             background-color: #0a84ff; 
             border-radius: 50%;
             pointer-events: none; 
@@ -252,13 +252,13 @@
                     drop.classList.add('splash-drop');
                     
                     // ΑΛΛΑΓΗ: Λίγο μεγαλύτερη εξάπλωση (spread) για τις σταγόνες
-                    const tx = (Math.random() - 0.5) * 160; 
-                    const ty = -(Math.random() * 60 + 30); 
+                    const tx = (Math.random() - 0.5) * 300; 
+                    const ty = -(Math.random() * 180 + 80); 
                     
                     drop.style.setProperty('--tx', `${tx}px`);
                     drop.style.setProperty('--ty', `${ty}px`);
                     
-                    const duration = 0.3 + Math.random() * 0.3;
+                    const duration = 0.6 + Math.random() * 0.5;
                     drop.style.animation = `splash ${duration}s ease-out forwards`;
                     
                     bottleElement.appendChild(drop);
