@@ -57,14 +57,13 @@
             display: block;
         }
         
-        /* ΔΙΟΡΘΩΣΗ: Το animation του νερού */
         .water-fill {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(200px); /* Ξεκινάει 200px κάτω, τελείως έξω από το μπουκάλι */
+            transform: translateY(200px);
         }
         
         .bottle-wrap.filled .water-fill {
-            transform: translateY(0px); /* Ανεβαίνει τέρμα πάνω, μέχρι το καπάκι */
+            transform: translateY(0px);
         }
 
         .swipe-hint {
@@ -116,7 +115,32 @@
             overflow-y: auto;
             touch-action: pan-y;
         }
-        .history-content h2 { margin-top: 0; font-size: 22px; border-bottom: 1px solid #38383a; padding-bottom: 10px; }
+
+        /* Νέα στυλ για τον τίτλο και το κουμπί Εξαγωγής */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #38383a;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .history-header h2 { margin: 0; font-size: 22px; }
+        
+        #export-btn {
+            background-color: #2c2c2e;
+            color: #0a84ff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        #export-btn:active { background-color: #3a3a3c; }
 
         ul { list-style: none; padding: 0; margin: 0; }
         li { padding: 15px 0; border-bottom: 1px solid #2c2c2e; display: flex; justify-content: space-between; font-size: 18px; }
@@ -140,8 +164,7 @@
             <p class="subtitle">Άγγιξε ένα μπουκάλι</p>
         </div>
 
-        <div class="bottle-grid" id="grid">
-            </div>
+        <div class="bottle-grid" id="grid"></div>
 
         <div class="swipe-hint">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
@@ -152,25 +175,26 @@
     <div id="history-sheet">
         <div class="drag-handle"></div>
         <div class="history-content">
-            <h2>Ιστορικό</h2>
-            <ul id="history-list">
-                </ul>
+            <div class="history-header">
+                <h2>Ιστορικό</h2>
+                <button id="export-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    CSV
+                </button>
+            </div>
+            <ul id="history-list"></ul>
         </div>
     </div>
 
     <script>
-        // ΔΙΟΡΘΩΣΗ: Κλείσαμε το water-fill μέσα σε ένα Group (<g>) που έχει τη μάσκα.
         const bottleHTML = `
             <div class="bottle-wrap">
                 <svg class="bottle-svg" viewBox="0 0 100 200">
                     <g clip-path="url(#waterMask)">
                         <rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" />
                     </g>
-                    
                     <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
-                    
                     <rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/>
-                    
                     <text x="50" y="120" fill="rgba(255,255,255,0.7)" font-size="20" font-weight="bold" font-family="sans-serif" text-anchor="middle">1L</text>
                 </svg>
             </div>
@@ -235,6 +259,26 @@
                 historyList.appendChild(li);
             });
         }
+
+        // Λειτουργία Εξαγωγής CSV
+        document.getElementById('export-btn').addEventListener('click', () => {
+            let csvContent = "Ημερομηνία,Λίτρα\n";
+            history.forEach(row => {
+                csvContent += `${row.date},${row.liters}\n`;
+            });
+            
+            // Το \uFEFF προσθέτει BOM (Byte Order Mark) για να διαβάζει το Excel σωστά τα Ελληνικά
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'water_history.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
 
         let startY = 0;
         const mainScreen = document.getElementById('main-screen');
