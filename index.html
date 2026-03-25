@@ -50,7 +50,7 @@
         h1 { margin: 0; font-size: 24px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
 
-        /* Κοινό στυλ πλέγματος για Μπουκάλια και Ποτήρια */
+        /* Grids - Fixed 3 columns with dynamic resizing */
         .bottle-grid, .glass-grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -62,7 +62,7 @@
             margin-top: 50px;
         }
         .bottle-grid { gap: 25px 35px; }
-        .glass-grid { gap: 18px 25px; } /* Ελαφρώς μικρότερο gap για τα ποτήρια επειδή είναι περισσότερα */
+        .glass-grid { gap: 18px 25px; }
 
         .bottle-wrap, .glass-wrap { cursor: pointer; position: relative; display: flex; justify-content: center; align-items: center; }
 
@@ -75,7 +75,7 @@
             position: absolute; 
             right: 0; 
             top: 140px; 
-            bottom: 160px; /* Safe Zone πάνω από το ιστορικό */
+            bottom: 160px; 
             width: 105px;
             background: #1c1c1e; 
             border-radius: 35px 0 0 35px;
@@ -88,7 +88,21 @@
             z-index: 10;
             box-shadow: -5px 0 25px rgba(0,0,0,0.6);
         }
-        .tick { font-size: 11px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+
+        /* Kokkini Grammi - Indicator */
+        #indicator-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #ff3b30; /* iOS Red */
+            box-shadow: 0 0 10px rgba(255, 59, 48, 0.7);
+            pointer-events: none;
+            z-index: 15;
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tick { font-size: 11px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; z-index: 5; }
         .tick::after { content: ''; width: 12px; height: 1px; background: #48484a; }
         .tick.major { color: #8e8e93; font-weight: 800; }
         .tick.major::after { width: 20px; height: 2px; background: #636366; }
@@ -156,7 +170,9 @@
                     </svg>
                     <div class="pitcher-text" id="pitcher-text">0 ml</div>
                 </div>
-                <div id="pitcher-drag-zone"></div>
+                <div id="pitcher-drag-zone">
+                    <div id="indicator-line"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -193,7 +209,6 @@
         }
 
         function initUI() {
-            // Bottles UI
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
             let numB = Math.ceil(goalMl / B_STEP);
@@ -213,7 +228,6 @@
                 bGrid.appendChild(wrap);
             }
 
-            // Glasses UI (Updated to match bottle grid style)
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
             let numG = Math.ceil(goalMl / G_STEP);
@@ -234,7 +248,11 @@
             }
 
             const dragZone = document.getElementById('pitcher-drag-zone');
+            // Keep the indicator line when clearing ticks
+            const indicator = document.getElementById('indicator-line');
             dragZone.innerHTML = '';
+            dragZone.appendChild(indicator);
+
             for(let i=0; i<=goalMl; i+=500) {
                 const t = document.createElement('div'); 
                 t.className = 'tick' + (i % 1000 === 0 ? ' major' : ''); 
@@ -261,6 +279,14 @@
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
             document.getElementById('pitcher-text').innerText = total + ' ml';
 
+            // Ενημέρωση της κόκκινης γραμμής στον slider
+            const line = document.getElementById('indicator-line');
+            const zone = document.getElementById('pitcher-drag-zone');
+            const padding = 30; // Matches CSS padding
+            const availableHeight = zone.clientHeight - (padding * 2);
+            const bottomPos = padding + (pPercent * availableHeight);
+            line.style.bottom = bottomPos + 'px';
+
             const container = document.getElementById('history-list-container');
             container.innerHTML = '';
             history.forEach(h => {
@@ -279,8 +305,10 @@
 
         function handleDrag(e) {
             const rect = dragZone.getBoundingClientRect();
-            const y = e.touches[0].clientY - rect.top;
-            const percentage = 1 - (y / rect.height);
+            const padding = 30;
+            const y = e.touches[0].clientY - rect.top - padding;
+            const availableHeight = rect.height - (padding * 2);
+            const percentage = 1 - (y / availableHeight);
             const clamped = Math.max(0, Math.min(1, percentage));
             currentMl = Math.round((clamped * goalMl) / 50) * 50; 
             updateUI();
