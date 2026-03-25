@@ -24,7 +24,6 @@
         .top-bar { position: absolute; top: 20px; right: 20px; z-index: 50; }
         .icon-btn { background: none; border: none; color: #8e8e93; padding: 10px; cursor: pointer; }
         
-        /* Settings Modal */
         #settings-modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
@@ -51,7 +50,6 @@
         h1 { margin: 0; font-size: 22px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
 
-        /* Grids */
         .bottle-grid, .glass-grid { 
             display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; align-content: center; 
             width: 92%; max-width: 500px; height: 60vh; margin-top: 50px;
@@ -61,7 +59,6 @@
 
         .bottle-wrap, .glass-wrap { cursor: pointer; position: relative; display: flex; justify-content: center; align-items: center; }
 
-        /* Pitcher Screen */
         .pitcher-container { position: relative; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; }
         #pitcher-wrap { width: 200px; height: 280px; position: relative; pointer-events: none; }
         .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
@@ -178,7 +175,6 @@
     </div>
 
     <script>
-        // Data State
         let goalMl = parseInt(localStorage.getItem('waterGoal')) || 2000;
         let bStep = parseInt(localStorage.getItem('bottleSize')) || 750;
         let gStep = parseInt(localStorage.getItem('glassSize')) || 350;
@@ -203,11 +199,9 @@
         }
 
         function initUI() {
-            // Update Titles
             document.getElementById('bottle-title').innerText = `Μπουκάλια (${bStep}ml)`;
             document.getElementById('glass-title').innerText = `Ποτήρια (${gStep}ml)`;
 
-            // Bottles Grid
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
             let numB = Math.ceil(goalMl / bStep);
@@ -217,7 +211,13 @@
                 wrap.className = 'bottle-wrap';
                 wrap.style.width = (75 * bScale) + 'px';
                 wrap.style.height = (150 * bScale) + 'px';
-                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200"><g clip-path="url(#bottleMask)"><rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/></g><rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/></svg>`;
+                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200">
+                    <g clip-path="url(#bottleMask)">
+                        <rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/>
+                    </g>
+                    <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/>
+                    <text x="50" y="115" fill="white" font-size="28" font-weight="900" text-anchor="middle" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5)">${i+1}</text>
+                </svg>`;
                 wrap.onclick = () => {
                     let threshold = (i + 1) * bStep;
                     if (currentMl >= threshold) currentMl = Math.max(0, threshold - bStep);
@@ -227,7 +227,6 @@
                 bGrid.appendChild(wrap);
             }
 
-            // Glasses Grid
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
             let numG = Math.ceil(goalMl / gStep);
@@ -237,7 +236,13 @@
                 wrap.className = 'glass-wrap';
                 wrap.style.width = (65 * gScale) + 'px';
                 wrap.style.height = (90 * gScale) + 'px';
-                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 150"><g clip-path="url(#glassMask)"><rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)"/></g><path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="90" fill="rgba(255,255,255,0.6)" font-size="14" font-weight="bold" text-anchor="middle">${gStep}</text></svg>`;
+                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 150">
+                    <g clip-path="url(#glassMask)">
+                        <rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)"/>
+                    </g>
+                    <path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4"/>
+                    <text x="50" y="95" fill="white" font-size="32" font-weight="900" text-anchor="middle" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5)">${i+1}</text>
+                </svg>`;
                 wrap.onclick = () => {
                     let threshold = (i + 1) * gStep;
                     if (currentMl >= threshold) currentMl = Math.max(0, threshold - gStep);
@@ -247,7 +252,6 @@
                 gGrid.appendChild(wrap);
             }
 
-            // Pitcher Slider Ticks (including 100ml subdivisions)
             const dragZone = document.getElementById('pitcher-drag-zone');
             const indicator = document.getElementById('indicator-line');
             dragZone.innerHTML = '';
@@ -257,9 +261,7 @@
                 const isMajor = (i % 500 === 0);
                 const t = document.createElement('div'); 
                 t.className = 'tick' + (isMajor ? ' major' : ''); 
-                if (isMajor) {
-                    t.innerText = i >= 1000 ? (i/1000)+'L' : i;
-                }
+                if (isMajor) t.innerText = i >= 1000 ? (i/1000)+'L' : i;
                 dragZone.appendChild(t);
             }
         }
@@ -268,7 +270,6 @@
             const total = Math.max(0, currentMl);
             document.getElementById('global-display').innerText = `${total} / ${goalMl} ml`;
 
-            // Fills
             document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => {
                 let fill = Math.max(0, Math.min(bStep, total - (i * bStep)));
                 rect.style.transform = `translateY(${200 - (fill/bStep * 200)}px)`;
@@ -278,12 +279,10 @@
                 rect.style.transform = `translateY(${150 - (fill/gStep * 150)}px)`;
             });
 
-            // Pitcher
             let pPercent = Math.min(1, total / goalMl);
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
             document.getElementById('pitcher-text').innerText = total + ' ml';
 
-            // Red Indicator Line
             const line = document.getElementById('indicator-line');
             const zone = document.getElementById('pitcher-drag-zone');
             const padding = 30; 
@@ -291,7 +290,6 @@
             const bottomPos = padding + (pPercent * availableHeight);
             line.style.bottom = bottomPos + 'px';
 
-            // History
             const container = document.getElementById('history-list-container');
             container.innerHTML = '';
             history.forEach(h => {
@@ -302,7 +300,6 @@
             });
         }
 
-        // Drag Logic
         let isDrag = false;
         const dragZone = document.getElementById('pitcher-drag-zone');
         dragZone.ontouchstart = e => { isDrag = true; handleDrag(e); };
@@ -320,7 +317,6 @@
             updateUI();
         }
 
-        // Settings Modal Logic
         const mod = document.getElementById('settings-modal');
         const sliG = document.getElementById('goal-slider'), valG = document.getElementById('goal-val');
         const sliB = document.getElementById('bottle-size-slider'), valB = document.getElementById('bottle-size-val');
@@ -338,16 +334,10 @@
         sliGL.oninput = e => valGL.innerText = e.target.value + ' ml';
 
         document.getElementById('save-settings').onclick = () => {
-            goalMl = parseInt(sliG.value);
-            bStep = parseInt(sliB.value);
-            gStep = parseInt(sliGL.value);
-            saveData();
-            mod.classList.remove('open');
-            initUI();
-            updateUI();
+            goalMl = parseInt(sliG.value); bStep = parseInt(sliB.value); gStep = parseInt(sliGL.value);
+            saveData(); mod.classList.remove('open'); initUI(); updateUI();
         };
 
-        // UI Interactions
         const sc = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
         sc.onscroll = () => { let i = Math.round(sc.scrollLeft / window.innerWidth); ds.forEach((d, k) => d.classList.toggle('active', k === i)); };
 
