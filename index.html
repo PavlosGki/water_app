@@ -12,10 +12,9 @@
         body {
             margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #000000; color: #ffffff;
-            overflow: hidden; touch-action: none; /* Αποτρέπει το default scroll του browser */
+            overflow: hidden; touch-action: none; 
         }
 
-        /* --- Top Bar & Settings --- */
         .top-bar { position: absolute; top: 20px; right: 20px; z-index: 50; }
         .icon-btn { background: none; border: none; color: #8e8e93; padding: 10px; cursor: pointer; }
         
@@ -37,7 +36,6 @@
             border-radius: 10px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer;
         }
 
-        /* --- Swipe Container --- */
         #swipe-container {
             display: flex; width: 100vw; height: 100vh;
             overflow-x: auto; scroll-snap-type: x mandatory;
@@ -55,7 +53,6 @@
         h1 { margin: 0; font-size: 26px; font-weight: 700; color: #f2f2f7; }
         p.subtitle { margin: 5px 0 0 0; color: #8e8e93; font-size: 14px; }
 
-        /* --- Οθόνη 1: Μπουκάλια --- */
         .bottle-grid {
             display: grid; grid-template-columns: repeat(2, 90px);
             gap: 20px 40px; justify-content: center; margin-top: 40px;
@@ -63,14 +60,12 @@
         .bottle-wrap { width: 90px; height: 180px; cursor: pointer; position: relative; }
         .bottle-wrap.center-odd { grid-column: 1 / span 2; justify-self: center; }
 
-        /* --- Οθόνη 2: Ποτήρια --- */
         .glass-grid {
             display: grid; grid-template-columns: repeat(3, 70px);
             gap: 15px 25px; justify-content: center; margin-top: 60px;
         }
         .glass-wrap { width: 70px; height: 100px; cursor: pointer; position: relative; }
 
-        /* --- Οθόνη 3: Κανάτα --- */
         .pitcher-container { position: relative; width: 200px; height: 300px; margin-top: 40px; }
         #pitcher-wrap { width: 100%; height: 100%; cursor: ns-resize; touch-action: none; }
         .pitcher-text {
@@ -84,11 +79,9 @@
         .tick { font-size: 12px; color: #8e8e93; display: flex; align-items: center; gap: 5px; }
         .tick::before { content: ''; width: 10px; height: 2px; background: #48484a; }
 
-        /* --- Κοινά στοιχεία SVG --- */
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* --- Splash Effect --- */
         .splash-drop {
             position: absolute; top: 10px; left: 50%; width: 40px; height: 60px;
             background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5;
@@ -98,10 +91,9 @@
             100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; }
         }
 
-        /* --- Ιστορικό & Dots --- */
-        .swipe-hint { position: fixed; bottom: 30px; display: flex; flex-direction: column; align-items: center; opacity: 0.5; animation: bounce 2s infinite; width: 100vw; pointer-events: none; z-index: 20;}
-        .swipe-hint span { font-size: 12px; margin-top: 5px; color: #aeaeb2;}
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .dots { position: fixed; bottom: 80px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 10; pointer-events: none; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
+        .dot.active { background: #f2f2f7; }
 
         #history-sheet {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh;
@@ -112,17 +104,6 @@
         #history-sheet.open { transform: translateY(0); }
         .drag-handle { width: 40px; height: 5px; background-color: #48484a; border-radius: 3px; margin: 15px auto; }
         .history-content { padding: 20px 30px; flex: 1; overflow-y: auto; touch-action: pan-y; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #38383a; padding-bottom: 10px; margin-bottom: 10px; }
-        .history-header h2 { margin: 0; font-size: 22px; }
-        #export-btn { background-color: #2c2c2e; color: #0a84ff; border: none; border-radius: 8px; padding: 6px 12px; font-size: 14px; cursor: pointer; }
-        ul { list-style: none; padding: 0; margin: 0; }
-        li { padding: 15px 0; border-bottom: 1px solid #2c2c2e; display: flex; justify-content: space-between; font-size: 18px; }
-        li .date { color: #f2f2f7; }
-        li .liters { color: #0a84ff; font-weight: bold; }
-        
-        .dots { position: fixed; bottom: 80px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 10; pointer-events: none; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
-        .dot.active { background: #f2f2f7; }
     </style>
 </head>
 <body>
@@ -191,11 +172,6 @@
         <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
     </div>
 
-    <div class="swipe-hint">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
-        <span>Ιστορικό</span>
-    </div>
-
     <div id="history-sheet">
         <div class="drag-handle"></div>
         <div class="history-content">
@@ -208,7 +184,7 @@
     </div>
 
     <script>
-        // --- State Management ---
+        // --- State ---
         let goalLiters = parseInt(localStorage.getItem('waterGoal')) || 5;
         let history = JSON.parse(localStorage.getItem('waterHistory')) || [];
         const getToday = () => new Date().toLocaleDateString('el-GR');
@@ -216,26 +192,27 @@
         let todayRecord = history.find(h => h.date === today);
 
         if (!todayRecord) {
-            history.unshift({ date: today, ml: 0 });
+            history.unshift({ date: today, ml: 0, bottleStates: [] });
             todayRecord = history[0];
-            saveData();
-        } else if (todayRecord.liters !== undefined) {
-            todayRecord.ml = todayRecord.liters * 1000;
-            delete todayRecord.liters;
-            saveData();
         }
-        let currentMl = todayRecord.ml;
+        
+        // Initial clean states
+        if (!todayRecord.bottleStates) todayRecord.bottleStates = Array(5).fill(false);
+        if (!todayRecord.glassStates) todayRecord.glassStates = Array(15).fill(false);
+
+        let currentMl = todayRecord.ml || 0;
 
         function saveData() {
+            todayRecord.ml = currentMl;
             localStorage.setItem('waterGoal', goalLiters);
             localStorage.setItem('waterHistory', JSON.stringify(history));
         }
 
-        // --- Init DOM Elements (Χτίζει τα μπουκάλια/ποτήρια ΜΟΝΟ μια φορά) ---
+        // --- UI Builders ---
         function initUI() {
             document.getElementById('title-bottles').innerText = `Στόχος: ${goalLiters} Λίτρα`;
             
-            // 1. Μπουκάλια
+            // 1. Bottles Grid
             const bottleGrid = document.getElementById('bottle-grid');
             bottleGrid.innerHTML = '';
             for (let i = 0; i < goalLiters; i++) {
@@ -245,7 +222,7 @@
                 wrap.innerHTML = `
                     <svg class="svg-obj" viewBox="0 0 100 200">
                         <g clip-path="url(#bottleMask)">
-                            <rect class="water-fill" data-max="200" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)" />
+                            <rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)" />
                         </g>
                         <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
                         <rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/>
@@ -253,196 +230,124 @@
                     </svg>
                 `;
                 wrap.addEventListener('click', () => {
-                    let threshold = (i + 1) * 1000;
-                    currentMl = currentMl >= threshold ? currentMl - 1000 : currentMl + 1000;
-                    if(currentMl < 0) currentMl = 0;
-                    todayRecord.ml = currentMl;
+                    todayRecord.bottleStates[i] = !todayRecord.bottleStates[i];
+                    currentMl += todayRecord.bottleStates[i] ? 1000 : -1000;
+                    if (currentMl < 0) currentMl = 0;
+                    if (todayRecord.bottleStates[i]) createSplash(wrap);
                     saveData();
-                    if(currentMl >= threshold) createSplash(wrap); // Splash μόνο στην προσθήκη!
                     updateUI();
                 });
                 bottleGrid.appendChild(wrap);
             }
 
-            // 2. Ποτήρια
+            // 2. Glasses Grid
             const glassGrid = document.getElementById('glass-grid');
             glassGrid.innerHTML = '';
-            let maxGlasses = Math.ceil((goalLiters * 1000) / 350); // Υπολογισμός ποτηριών βάσει στόχου
+            let maxGlasses = Math.ceil((goalLiters * 1000) / 350); 
             for (let i = 0; i < maxGlasses; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'glass-wrap';
                 wrap.innerHTML = `
                     <svg class="svg-obj" viewBox="0 0 100 150">
                         <g clip-path="url(#glassMask)">
-                            <rect class="water-fill" data-max="150" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)" />
+                            <rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)" />
                         </g>
                         <path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
                         <text x="50" y="90" fill="rgba(255,255,255,0.7)" font-size="16" font-weight="bold" font-family="sans-serif" text-anchor="middle">350</text>
                     </svg>
                 `;
                 wrap.addEventListener('click', () => {
-                    let threshold = (i + 1) * 350;
-                    currentMl = currentMl >= threshold ? currentMl - 350 : currentMl + 350;
-                    if(currentMl < 0) currentMl = 0;
-                    todayRecord.ml = currentMl;
+                    todayRecord.glassStates[i] = !todayRecord.glassStates[i];
+                    currentMl += todayRecord.glassStates[i] ? 350 : -350;
+                    if (currentMl < 0) currentMl = 0;
                     saveData();
                     updateUI();
                 });
                 glassGrid.appendChild(wrap);
             }
 
-            // 3. Δοσομετρητής Κανάτας
             const pitcherTicks = document.getElementById('pitcher-ticks');
             pitcherTicks.innerHTML = '';
             for(let i=0; i<=goalLiters; i++) {
                 const tick = document.createElement('div');
-                tick.className = 'tick';
-                tick.innerText = `${i}L`;
+                tick.className = 'tick'; tick.innerText = `${i}L`;
                 pitcherTicks.appendChild(tick);
             }
         }
 
-        // --- Update UI (Συγχρονίζει το νερό ΣΕ ΟΛΕΣ τις οθόνες ταυτόχρονα) ---
+        // --- Sync Update ---
         function updateUI() {
-            // Ενημέρωση Μπουκαλιών
+            // Update Bottles (Independent view - Toggle based)
             document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => {
-                let fillMl = Math.max(0, Math.min(1000, currentMl - (i * 1000)));
-                let translateY = 200 - ((fillMl / 1000) * 200); // 200px = Τελείως άδειο
-                rect.style.transform = `translateY(${translateY}px)`;
+                rect.style.transform = todayRecord.bottleStates[i] ? 'translateY(0px)' : 'translateY(200px)';
             });
 
-            // Ενημέρωση Ποτηριών
+            // Update Glasses (Linear view - Sync with currentMl)
             document.querySelectorAll('#glass-grid .water-fill').forEach((rect, i) => {
                 let fillMl = Math.max(0, Math.min(350, currentMl - (i * 350)));
-                let translateY = 150 - ((fillMl / 350) * 150); // 150px = Τελείως άδειο
+                let translateY = 150 - ((fillMl / 350) * 150);
                 rect.style.transform = `translateY(${translateY}px)`;
             });
 
-            // Ενημέρωση Κανάτας
+            // Update Pitcher (Linear view)
             let maxPitcherMl = goalLiters * 1000;
-            let pitcherFillPercent = Math.min(1, currentMl / maxPitcherMl);
-            let pitcherTranslateY = 300 - (pitcherFillPercent * 300);
-            document.getElementById('pitcher-fill').style.transform = `translateY(${pitcherTranslateY}px)`;
+            let pPercent = Math.min(1, currentMl / maxPitcherMl);
+            document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
             document.getElementById('pitcher-text').innerText = `${(currentMl / 1000).toFixed(1)} L`;
 
-            // Ενημέρωση Ιστορικού
             const historyList = document.getElementById('history-list');
             historyList.innerHTML = '';
             history.forEach(item => {
                 const li = document.createElement('li');
-                const label = item.date === today ? 'Σήμερα' : item.date;
-                const displayLiters = (item.ml !== undefined ? item.ml : (item.liters * 1000)) / 1000;
-                li.innerHTML = `<span class="date">${label}</span><span class="liters">${displayLiters.toFixed(1)} L</span>`;
+                li.innerHTML = `<span>${item.date === today ? 'Σήμερα' : item.date}</span><span style="color:#0a84ff; font-weight:bold">${(item.ml/1000).toFixed(1)} L</span>`;
                 historyList.appendChild(li);
             });
         }
 
-        // --- Drag Logic για την Κανάτα ---
-        let isDraggingPitcher = false;
-        let pitcherStartY = 0;
-        let startMl = 0;
-        const pitcherWrap = document.getElementById('pitcher-wrap');
-
-        pitcherWrap.addEventListener('touchstart', (e) => {
-            isDraggingPitcher = true;
-            pitcherStartY = e.touches[0].clientY;
-            startMl = currentMl;
-        }, {passive: true});
-
-        pitcherWrap.addEventListener('touchmove', (e) => {
-            if(!isDraggingPitcher) return;
-            let deltaY = pitcherStartY - e.touches[0].clientY; // Θετικό όταν πάει πάνω
-            
-            // Κάθε 20px σύρσιμο = 1 βήμα των 350ml
-            let steps = Math.round(deltaY / 20);
-            let newMl = startMl + (steps * 350);
-            
-            if (newMl < 0) newMl = 0;
-            // Επιτρέπουμε να ξεπεράσει ελαφρώς το στόχο αν θέλει
-            
-            if (newMl !== currentMl) {
-                currentMl = newMl;
-                todayRecord.ml = currentMl;
-                saveData();
-                updateUI(); // Ακαριαία ανανέωση στα πάντα!
-            }
-        }, {passive: false});
-
-        pitcherWrap.addEventListener('touchend', () => { isDraggingPitcher = false; });
-
-        // --- Splash Animation ---
-        function createSplash(bottleElement) {
+        // --- Helpers ---
+        function createSplash(el) {
             setTimeout(() => {
                 for (let i = 0; i < 6; i++) { 
-                    const drop = document.createElement('div');
-                    drop.classList.add('splash-drop');
+                    const d = document.createElement('div');
+                    d.classList.add('splash-drop');
                     const tx = (Math.random() - 0.5) * 300; 
                     const ty = -(Math.random() * 180 + 80); 
-                    drop.style.setProperty('--tx', `${tx}px`);
-                    drop.style.setProperty('--ty', `${ty}px`);
-                    const duration = 0.6 + Math.random() * 0.5;
-                    drop.style.animation = `splash ${duration}s ease-out forwards`;
-                    bottleElement.appendChild(drop);
-                    setTimeout(() => drop.remove(), duration * 1000);
+                    d.style.setProperty('--tx', `${tx}px`);
+                    d.style.setProperty('--ty', `${ty}px`);
+                    const dur = 0.6 + Math.random() * 0.5;
+                    d.style.animation = `splash ${dur}s ease-out forwards`;
+                    el.appendChild(d);
+                    setTimeout(() => d.remove(), dur * 1000);
                 }
             }, 350); 
         }
 
-        // --- Settings & Gestures ---
-        const settingsModal = document.getElementById('settings-modal');
-        const goalSlider = document.getElementById('goal-slider');
-        const goalValText = document.getElementById('goal-val');
-
-        document.getElementById('open-settings').addEventListener('click', () => {
-            goalSlider.value = goalLiters;
-            goalValText.innerText = goalLiters;
-            settingsModal.classList.add('open');
+        // Drag Pitcher (Linear control)
+        let isDragging = false, startY = 0, startMl = 0;
+        const pWrap = document.getElementById('pitcher-wrap');
+        pWrap.addEventListener('touchstart', e => { isDragging = true; startY = e.touches[0].clientY; startMl = currentMl; }, {passive:true});
+        pWrap.addEventListener('touchmove', e => {
+            if(!isDragging) return;
+            let steps = Math.round((startY - e.touches[0].clientY) / 20);
+            currentMl = Math.max(0, startMl + (steps * 350));
+            saveData(); updateUI();
         });
+        pWrap.addEventListener('touchend', () => isDragging = false);
 
-        goalSlider.addEventListener('input', (e) => { goalValText.innerText = e.target.value; });
+        // Settings
+        const modal = document.getElementById('settings-modal'), slider = document.getElementById('goal-slider'), val = document.getElementById('goal-val');
+        document.getElementById('open-settings').onclick = () => { slider.value = goalLiters; val.innerText = goalLiters; modal.classList.add('open'); };
+        slider.oninput = e => val.innerText = e.target.value;
+        document.getElementById('save-settings').onclick = () => { 
+            goalLiters = parseInt(slider.value); 
+            todayRecord.bottleStates = Array(goalLiters).fill(false);
+            saveData(); modal.classList.remove('open'); initUI(); updateUI(); 
+        };
 
-        document.getElementById('save-settings').addEventListener('click', () => {
-            goalLiters = parseInt(goalSlider.value);
-            saveData();
-            settingsModal.classList.remove('open');
-            initUI(); // Ξαναχτίζει το DOM για το νέο στόχο
-            updateUI(); // Ενημερώνει τα επίπεδα νερού
-        });
+        const swipe = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
+        swipe.onscroll = () => { let idx = Math.round(swipe.scrollLeft / window.innerWidth); ds.forEach((d, i) => d.classList.toggle('active', i === idx)); };
 
-        // Swipe & Dots
-        const swipeContainer = document.getElementById('swipe-container');
-        const dots = document.querySelectorAll('.dot');
-        swipeContainer.addEventListener('scroll', () => {
-            let index = Math.round(swipeContainer.scrollLeft / window.innerWidth);
-            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
-        });
-
-        // Ιστορικό Swipe Up
-        let startY = 0;
-        const sheet = document.getElementById('history-sheet');
-        const historyContent = document.querySelector('.history-content');
-
-        document.body.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
-        document.body.addEventListener('touchend', e => {
-            let endY = e.changedTouches[0].clientY;
-            if (startY - endY > 60 && !sheet.classList.contains('open') && e.target.id !== 'pitcher-wrap') {
-                sheet.classList.add('open');
-            }
-        }, {passive: true});
-
-        sheet.addEventListener('touchstart', e => { startY = e.touches[0].clientY; e.stopPropagation(); }, {passive: true});
-        sheet.addEventListener('touchend', e => {
-            let endY = e.changedTouches[0].clientY;
-            if (endY - startY > 60 && historyContent.scrollTop <= 0) {
-                sheet.classList.remove('open');
-            }
-            e.stopPropagation();
-        }, {passive: true});
-
-        // Εκκίνηση Εφαρμογής
-        initUI();
-        updateUI();
-
+        initUI(); updateUI();
     </script>
 </body>
 </html>
