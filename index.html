@@ -217,16 +217,8 @@
         // Elegant Sound Engine
         let audioCtx;
         function playSuccessSound() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High chime
-            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.15); // Drop frequency
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            const audio = new Audio('success.mp3'); // Το όνομα του αρχείου σου
+            audio.play();
         }
 
         function checkGoalBlink(prevMl) {
