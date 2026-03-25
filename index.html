@@ -15,6 +15,7 @@
             overflow: hidden; touch-action: none; 
         }
 
+        /* Top Stats */
         .global-stats {
             position: absolute; top: 25px; left: 20px; z-index: 50;
             font-size: 14px; font-weight: 700; color: #0a84ff; background: rgba(10, 132, 255, 0.15);
@@ -24,6 +25,7 @@
         .top-bar { position: absolute; top: 20px; right: 20px; z-index: 50; }
         .icon-btn { background: none; border: none; color: #8e8e93; padding: 10px; cursor: pointer; }
         
+        /* Settings Modal */
         #settings-modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); backdrop-filter: blur(15px);
@@ -42,6 +44,7 @@
 
         .save-btn { background: #0a84ff; color: #fff; border: none; padding: 18px; border-radius: 15px; font-weight: bold; width: 100%; font-size: 16px; }
 
+        /* Swipe container */
         #swipe-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
         #swipe-container::-webkit-scrollbar { display: none; }
         .screen { flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
@@ -58,34 +61,35 @@
         .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 80px; }
         .glass-wrap { width: 75px; height: 100px; cursor: pointer; position: relative; }
 
-        /* Pitcher Screen - Enhanced Slider */
-        .pitcher-container { position: relative; width: 100%; height: 350px; margin-top: 60px; display: flex; justify-content: center; align-items: center; }
-        #pitcher-wrap { width: 180px; height: 280px; position: relative; pointer-events: none; }
-        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        /* Pitcher Screen & Horizontal Slider */
+        .pitcher-container { position: relative; width: 100%; height: 350px; margin-top: -40px; display: flex; justify-content: center; align-items: center; }
+        #pitcher-wrap { width: 200px; height: 300px; position: relative; pointer-events: none; }
+        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 22px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
         #pitcher-drag-zone { 
-            position: absolute; right: 0; top: 0; width: 110px; height: 100vh; /* Full screen height */
-            display: flex; flex-direction: column-reverse; justify-content: space-between; 
-            cursor: ns-resize; touch-action: none; background: rgba(255,255,255,0.02); 
-            border-left: 1px solid rgba(255,255,255,0.1); padding: 40px 10px; /* Padding for top/bottom icons comfort */
-            z-index: 10;
+            position: absolute; bottom: 130px; width: 90%; height: 80px;
+            display: flex; flex-direction: row; justify-content: space-between; align-items: flex-end;
+            cursor: ew-resize; touch-action: none; background: rgba(255,255,255,0.03); 
+            border-radius: 15px; padding: 15px; z-index: 10;
         }
-        .tick { font-size: 10px; color: #636366; display: flex; align-items: center; justify-content: flex-end; gap: 5px; width: 100%; }
-        .tick::after { content: ''; width: 15px; height: 1px; background: #48484a; }
-        .tick.major { color: #8e8e93; }
-        .tick.major::after { width: 25px; height: 2px; background: #636366; }
+        .tick { font-size: 10px; color: #636366; display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+        .tick::after { content: ''; width: 2px; height: 12px; background: #48484a; }
+        .tick.major { color: #8e8e93; font-weight: bold; }
+        .tick.major::after { height: 20px; background: #636366; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* Splash */
+        /* Splash Effect */
         .splash-drop { position: absolute; top: 10px; left: 50%; width: 40px; height: 60px; background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5; }
         @keyframes splash { 0% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; } }
 
+        /* Nav Dots */
         .dots { position: fixed; bottom: 90px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 5; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
         .dot.active { background: #f2f2f7; }
 
+        /* History Tab */
         #history-sheet { position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh; background-color: #1c1c1e; border-radius: 30px 30px 0 0; z-index: 60; transform: translateY(calc(100% - 65px)); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.6); }
         #history-sheet.open { transform: translateY(0); }
         .history-header-tab { height: 65px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
@@ -104,7 +108,7 @@
         </defs>
     </svg>
 
-    <div class="global-stats" id="global-display">0 / 5000 ml</div>
+    <div class="global-stats" id="global-display">0 / 5250 ml</div>
 
     <div class="top-bar">
         <button class="icon-btn" id="open-settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
@@ -113,8 +117,8 @@
     <div id="settings-modal">
         <div class="settings-box">
             <h2>Στόχος (ml)</h2>
-            <div id="goal-val" style="font-size: 36px; color: #0a84ff; font-weight: 800;">5000</div>
-            <input type="range" id="goal-slider" min="750" max="7500" step="375" value="5000">
+            <div id="goal-val" style="font-size: 36px; color: #0a84ff; font-weight: 800;">5250</div>
+            <input type="range" id="goal-slider" min="750" max="7500" step="375" value="5250">
             <button class="save-btn" id="save-settings">Αποθήκευση</button>
         </div>
     </div>
@@ -123,21 +127,21 @@
         <div class="screen">
             <div class="title-container">
                 <h1>Μπουκάλια (750ml)</h1>
-                <p class="subtitle">Άγγιξε ένα μπουκάλι</p>
+                <p class="subtitle">Άγγιξε για να προσθέσεις</p>
             </div>
             <div class="bottle-grid" id="bottle-grid"></div>
         </div>
         <div class="screen">
             <div class="title-container">
                 <h1>Ποτήρια (350ml)</h1>
-                <p class="subtitle">Άγγιξε ένα ποτήρι</p>
+                <p class="subtitle">Άγγιξε για να προσθέσεις</p>
             </div>
             <div class="glass-grid" id="glass-grid"></div>
         </div>
         <div class="screen">
             <div class="title-container">
                 <h1>Κανάτα</h1>
-                <p class="subtitle">Σύρε τον δοσομετρητή (±350ml)</p>
+                <p class="subtitle">Σύρε οριζόντια στο κάτω μέρος</p>
             </div>
             <div class="pitcher-container">
                 <div id="pitcher-wrap">
@@ -182,27 +186,20 @@
         let currentMl = todayRecord.ml || 0;
 
         function saveData() {
-            todayRecord.ml = currentMl;
+            todayRecord.ml = Math.max(0, currentMl);
             localStorage.setItem('waterGoal', goalMl);
             localStorage.setItem('waterHistory', JSON.stringify(history));
         }
 
         function initUI() {
-            // Screen 1: Bottles (750ml)
+            // Bottles
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
             let numB = Math.ceil(goalMl / B_STEP);
             for (let i = 0; i < numB; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'bottle-wrap' + (numB % 2 !== 0 && i === numB - 1 ? ' center-odd' : '');
-                wrap.innerHTML = `
-                    <svg class="svg-obj" viewBox="0 0 100 200">
-                        <g clip-path="url(#bottleMask)">
-                            <rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/>
-                        </g>
-                        <rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/>
-                        <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/>
-                    </svg>`;
+                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200"><g clip-path="url(#bottleMask)"><rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/></g><rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/></svg>`;
                 wrap.onclick = () => {
                     let threshold = (i + 1) * B_STEP;
                     if (currentMl >= threshold) currentMl = Math.max(0, threshold - B_STEP);
@@ -212,7 +209,7 @@
                 bGrid.appendChild(wrap);
             }
 
-            // Screen 2: Glasses (350ml)
+            // Glasses
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
             let numG = Math.ceil(goalMl / G_STEP);
@@ -229,10 +226,10 @@
                 gGrid.appendChild(wrap);
             }
 
-            // Screen 3: Ticks (ανά 500ml)
+            // Horizontal Ticks
             const dragZone = document.getElementById('pitcher-drag-zone');
             dragZone.innerHTML = '';
-            for(let i=0; i<=goalMl; i+=500) {
+            for(let i=0; i<=goalMl; i+=STEP_TICK(goalMl)) {
                 const t = document.createElement('div'); 
                 t.className = 'tick' + (i % 1000 === 0 ? ' major' : ''); 
                 t.innerText = i >= 1000 ? (i/1000)+'L' : i;
@@ -240,28 +237,26 @@
             }
         }
 
+        function STEP_TICK(goal) { return goal > 4000 ? 1000 : 500; }
+
         function updateUI() {
             const total = Math.max(0, currentMl);
             document.getElementById('global-display').innerText = `${total} / ${goalMl} ml`;
 
-            // Sync Bottles (750ml base)
             document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => {
                 let bottleFill = Math.max(0, Math.min(B_STEP, total - (i * B_STEP)));
                 rect.style.transform = `translateY(${200 - (bottleFill/B_STEP * 200)}px)`;
             });
 
-            // Sync Glasses (350ml base)
             document.querySelectorAll('#glass-grid .water-fill').forEach((rect, i) => {
                 let glassFill = Math.max(0, Math.min(G_STEP, total - (i * G_STEP)));
                 rect.style.transform = `translateY(${150 - (glassFill/G_STEP * 150)}px)`;
             });
 
-            // Sync Pitcher
             let pPercent = Math.min(1, total / goalMl);
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
             document.getElementById('pitcher-text').innerText = total + ' ml';
 
-            // Sync History
             const container = document.getElementById('history-list-container');
             container.innerHTML = '';
             history.forEach(h => {
@@ -285,15 +280,14 @@
             }, 350);
         }
 
-        // Pitcher Drag Logic (Full Height)
-        let isDrag = false, sY = 0, startMlValue = 0;
+        // --- Horizontal Drag Logic ---
+        let isDrag = false, sX = 0, startMlValue = 0;
         const dragZone = document.getElementById('pitcher-drag-zone');
-        dragZone.ontouchstart = e => { isDrag = true; sY = e.touches[0].clientY; startMlValue = currentMl; };
+        dragZone.ontouchstart = e => { isDrag = true; sX = e.touches[0].clientX; startMlValue = currentMl; };
         dragZone.ontouchmove = e => {
             if(!isDrag) return;
-            // Ταχύτερο drag λόγω μεγαλύτερου ύψους
-            let deltaSteps = Math.round((sY - e.touches[0].clientY) / 25);
-            currentMl = Math.max(0, startMlValue + (deltaSteps * G_STEP));
+            let deltaSteps = Math.round((e.touches[0].clientX - sX) / 15);
+            currentMl = Math.max(0, startMlValue + (deltaSteps * 50)); // Accuracy of 50ml per move
             updateUI();
         };
         dragZone.ontouchend = () => { isDrag = false; saveData(); updateUI(); };
@@ -304,11 +298,9 @@
         sli.oninput = e => val.innerText = e.target.value;
         document.getElementById('save-settings').onclick = () => { goalMl = parseInt(sli.value); saveData(); mod.classList.remove('open'); initUI(); updateUI(); };
 
-        // Swipe & Dots
         const sc = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
         sc.onscroll = () => { let i = Math.round(sc.scrollLeft / window.innerWidth); ds.forEach((d, k) => d.classList.toggle('active', k === i)); };
 
-        // History Swipe
         let sheet = document.getElementById('history-sheet'), hSY = 0;
         document.getElementById('history-tab').ontouchstart = e => hSY = e.touches[0].clientY;
         document.getElementById('history-tab').ontouchend = e => {
