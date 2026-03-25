@@ -76,16 +76,17 @@
 
         .svg-obj { width: 100%; height: 100%; display: block; }
 
-        /* Animation για το νερό: Spring Bounce Effect */
+        /* Smooth water fill without spring effect */
         .water-fill { 
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: transform 0.5s ease-out; 
         }
 
         /* Confetti Styles */
         .confetti {
-            position: absolute; width: 8px; height: 8px;
+            position: absolute; width: 10px; height: 10px;
             pointer-events: none; z-index: 1000;
             border-radius: 2px;
+            left: 50vw; top: 50vh; /* Start from center */
         }
 
         .dots { position: fixed; bottom: 85px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 5; }
@@ -198,28 +199,43 @@
         if (!todayRecord) { todayRecord = { date: today, ml: 0 }; history.unshift(todayRecord); }
         let currentMl = todayRecord.ml || 0;
 
-        // Confetti Function
+        // Νέα συνάρτηση Confetti τύπου "Fountain"
         function launchConfetti() {
-            const colors = ['#0a84ff', '#5e5ce6', '#64d2ff', '#ffffff', '#ff3b30'];
-            for (let i = 0; i < 50; i++) {
+            const colors = ['#0a84ff', '#5e5ce6', '#64d2ff', '#ffffff', '#ff3b30', '#ffd60a'];
+            const startX = window.innerWidth / 2;
+            const startY = window.innerHeight / 2;
+
+            for (let i = 0; i < 60; i++) {
                 const c = document.createElement('div');
                 c.className = 'confetti';
                 c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                c.style.left = Math.random() * 100 + 'vw';
-                c.style.top = '-10px';
-                c.style.transform = `rotate(${Math.random() * 360}deg)`;
                 document.body.appendChild(c);
 
-                const destX = (Math.random() - 0.5) * 200;
-                const destY = window.innerHeight + 20;
-                const duration = 2000 + Math.random() * 3000;
+                // Γωνία εκτόξευσης: -90 μοίρες είναι πάνω. +/- 60 μοίρες δίνει το εύρος των 120 μοιρών.
+                const angle = (Math.random() * 120 - 60) - 90; 
+                const rad = angle * (Math.PI / 180);
+                
+                // Δύναμη εκτόξευσης (ταχύτητα)
+                const velocity = 15 + Math.random() * 25;
+                const vx = Math.cos(rad) * velocity;
+                const vy = Math.sin(rad) * velocity;
+                
+                // Τελικές θέσεις (παραβολική κίνηση)
+                // Ανεβαίνει πάνω από την οθόνη (y < 0) και μετά πέφτει
+                const peakY = -150 - Math.random() * 150; 
+                const finalX = vx * 40; 
+                const finalY = window.innerHeight;
 
                 c.animate([
-                    { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
-                    { transform: `translate(${destX}px, ${destY}px) rotate(${720}deg)`, opacity: 0 }
-                ], { duration: duration, easing: 'cubic-bezier(0, .9, .57, 1)' });
+                    { transform: `translate(0, 0) rotate(0deg)`, opacity: 1, offset: 0 },
+                    { transform: `translate(${vx * 15}px, ${peakY}px) rotate(180deg)`, opacity: 1, offset: 0.4 },
+                    { transform: `translate(${finalX}px, ${finalY}px) rotate(720deg)`, opacity: 0, offset: 1 }
+                ], {
+                    duration: 2500 + Math.random() * 1500,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
 
-                setTimeout(() => c.remove(), duration);
+                setTimeout(() => c.remove(), 4000);
             }
         }
 
