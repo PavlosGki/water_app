@@ -66,21 +66,20 @@
             transform: translateY(0px);
         }
 
-        /* --- ΝΕΟ: Εφέ Splash (Σταγόνες) --- */
+        /* --- ΑΛΛΑΓΗ: Πιο μεγάλες σταγόνες --- */
         .splash-drop {
             position: absolute;
-            top: 10px; /* Στο ύψος του στομίου */
+            top: 10px; 
             left: 50%;
-            width: 6px;
-            height: 10px; /* Σχήμα σταγόνας */
-            background-color: #0a84ff; /* Ίδιο χρώμα με το νερό */
+            width: 10px; /* Αύξηση από 6px σε 10px */
+            height: 16px; /* Αύξηση από 10px σε 16px */
+            background-color: #0a84ff; 
             border-radius: 50%;
-            pointer-events: none; /* Να μην εμποδίζουν τα κλικ */
+            pointer-events: none; 
             opacity: 0;
             z-index: 5;
         }
 
-        /* Το animation της σταγόνας: Πετάγεται και σβήνει */
         @keyframes splash {
             0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
             100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; }
@@ -246,29 +245,24 @@
         });
         renderHistory();
 
-        // --- ΝΕΟ: Συνάρτηση που δημιουργεί το Splash Effect ---
         function createSplash(bottleElement) {
-            // Περιμένουμε 350ms για να φτάσει το νερό πρώτα στο καπάκι (το animation διαρκεί 400ms)
             setTimeout(() => {
-                for (let i = 0; i < 6; i++) { // Δημιουργούμε 6 σταγόνες
+                for (let i = 0; i < 6; i++) { 
                     const drop = document.createElement('div');
                     drop.classList.add('splash-drop');
                     
-                    // Τυχαία κατεύθυνση (Άξονας X: Αριστερά-Δεξιά, Άξονας Y: Πάνω)
-                    const tx = (Math.random() - 0.5) * 80; 
-                    const ty = -(Math.random() * 50 + 20); 
+                    // ΑΛΛΑΓΗ: Λίγο μεγαλύτερη εξάπλωση (spread) για τις σταγόνες
+                    const tx = (Math.random() - 0.5) * 110; 
+                    const ty = -(Math.random() * 60 + 20); 
                     
-                    // Περνάμε τις συντεταγμένες στο CSS μέσω variables
                     drop.style.setProperty('--tx', `${tx}px`);
                     drop.style.setProperty('--ty', `${ty}px`);
                     
-                    // Τυχαία ταχύτητα για κάθε σταγόνα
                     const duration = 0.3 + Math.random() * 0.3;
                     drop.style.animation = `splash ${duration}s ease-out forwards`;
                     
                     bottleElement.appendChild(drop);
                     
-                    // Καθαρίζουμε τον κώδικα διαγράφοντας τη σταγόνα όταν τελειώσει το animation
                     setTimeout(() => drop.remove(), duration * 1000);
                 }
             }, 350); 
@@ -279,7 +273,7 @@
                 bottlesState[index] = !bottlesState[index];
                 if (bottlesState[index]) {
                     bottle.classList.add('filled');
-                    createSplash(bottle); // Καλούμε τη συνάρτηση όταν γεμίζει
+                    createSplash(bottle); 
                 } else {
                     bottle.classList.remove('filled');
                 }
