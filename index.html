@@ -57,33 +57,33 @@
         .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 80px; }
         .glass-wrap { width: 75px; height: 100px; cursor: pointer; position: relative; }
 
-        /* Pitcher Container */
-        .pitcher-container { position: relative; width: 100%; height: 350px; display: flex; justify-content: center; align-items: center; padding-right: 80px; }
+        /* Pitcher Screen */
+        .pitcher-container { position: relative; width: 100%; height: 400px; display: flex; justify-content: center; align-items: center; padding-right: 90px; }
         #pitcher-wrap { width: 220px; height: 300px; position: relative; pointer-events: none; }
         .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
-        /* Διορθωμένος Slider: Μεγαλύτερο Ύψος & Σταθερή Θέση */
+        /* Μεγαλύτερος Slider σε ύψος και πλάτος */
         #pitcher-drag-zone { 
             position: absolute; 
-            right: 15px; 
-            top: 130px;    /* Ξεκινάει κάτω από τον τίτλο */
-            bottom: 100px;  /* Σταματάει πάνω από τις τελείες/ιστορικό */
-            width: 85px;   /* Λίγο πιο φαρδύ για καλύτερο grip */
+            right: 10px; 
+            top: 115px;    /* Ακριβώς κάτω από τον τίτλο */
+            bottom: 75px;  /* Μέχρι την αρχή του ιστορικού */
+            width: 110px;  /* Πιο φαρδύ για καλύτερη αίσθηση */
             background: #1c1c1e; 
-            border-radius: 25px;
+            border-radius: 30px;
             display: flex; 
             flex-direction: column-reverse; 
             justify-content: space-between; 
             cursor: ns-resize; 
             touch-action: none; 
-            padding: 30px 0;
+            padding: 40px 0;
             z-index: 10;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.6);
         }
-        .tick { font-size: 10px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .tick::after { content: ''; width: 10px; height: 1px; background: #48484a; }
-        .tick.major { color: #8e8e93; font-weight: bold; }
-        .tick.major::after { width: 20px; height: 2px; background: #636366; }
+        .tick { font-size: 11px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+        .tick::after { content: ''; width: 15px; height: 1px; background: #48484a; }
+        .tick.major { color: #8e8e93; font-weight: 800; }
+        .tick.major::after { width: 25px; height: 2px; background: #636366; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -113,7 +113,7 @@
         </defs>
     </svg>
 
-    <div class="global-stats" id="global-display">0 / 5250 ml</div>
+    <div class="global-stats" id="global-display">0 / 5000 ml</div>
 
     <div class="top-bar">
         <button class="icon-btn" id="open-settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
@@ -122,8 +122,8 @@
     <div id="settings-modal">
         <div class="settings-box">
             <h2>Στόχος (ml)</h2>
-            <div id="goal-val" style="font-size: 36px; color: #0a84ff; font-weight: 800;">5250</div>
-            <input type="range" id="goal-slider" min="750" max="7500" step="375" value="5250">
+            <div id="goal-val" style="font-size: 36px; color: #0a84ff; font-weight: 800;">5000</div>
+            <input type="range" id="goal-slider" min="750" max="7500" step="375" value="5000">
             <button class="save-btn" id="save-settings">Αποθήκευση</button>
         </div>
     </div>
@@ -271,7 +271,7 @@
             }, 350);
         }
 
-        // --- FIXED DRAG LOGIC FOR LARGER AREA ---
+        // --- IMPROVED VERTICAL DRAG LOGIC ---
         let isDrag = false;
         const dragZone = document.getElementById('pitcher-drag-zone');
         
