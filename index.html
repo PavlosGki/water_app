@@ -50,13 +50,20 @@
 
         .save-btn { background: #0a84ff; color: #fff; border: none; padding: 16px; border-radius: 15px; font-weight: bold; width: 100%; font-size: 16px; }
 
-        #swipe-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
+        #swipe-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: auto; }
         #swipe-container::-webkit-scrollbar { display: none; }
         .screen { flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
 
         .title-container { text-align: center; position: absolute; top: 85px; width: 100%; z-index: 5; }
         h1 { margin: 0; font-size: 22px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
+
+        /* Weekly Status Styles */
+        .weekly-grid { display: flex; flex-direction: column; width: 85%; gap: 15px; margin-top: 60px; }
+        .week-row { display: flex; align-items: center; gap: 12px; width: 100%; }
+        .week-label { width: 35px; font-size: 11px; color: #8e8e93; font-weight: 700; text-transform: uppercase; }
+        .week-bar-bg { flex: 1; height: 12px; background: #1c1c1e; border-radius: 6px; position: relative; overflow: hidden; }
+        .week-bar-fill { position: absolute; left: 0; height: 100%; background: #0a84ff; transition: width 0.8s ease-out; }
 
         .bottle-grid, .glass-grid { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; align-content: center; width: 92%; max-width: 500px; height: 60vh; margin-top: 50px; }
         .bottle-grid { gap: 20px 30px; }
@@ -144,6 +151,11 @@
 
     <div id="swipe-container">
         <div class="screen">
+            <div class="title-container"><h1>Status Εβδομάδας</h1><p class="subtitle">Η πρόοδός σου ανά ημέρα</p></div>
+            <div class="weekly-grid" id="weekly-grid"></div>
+        </div>
+
+        <div class="screen">
             <div class="title-container"><h1 id="bottle-title">Μπουκάλια</h1><p class="subtitle">Άγγιξε για να προσθέσεις</p></div>
             <div class="bottle-grid" id="bottle-grid"></div>
         </div>
@@ -168,7 +180,7 @@
         </div>
     </div>
 
-    <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
 
     <div id="history-sheet">
         <div class="history-header-tab" id="history-tab">
@@ -187,18 +199,24 @@
         const getToday = () => new Date().toLocaleDateString('el-GR');
         let today = getToday();
         let todayRecord = history.find(h => h.date === today);
-        if (!todayRecord) { todayRecord = { date: today, ml: 0 }; history.unshift(todayRecord); }
+        if (!todayRecord) { todayRecord = { date: today, ml: 0, goal: goalMl }; history.unshift(todayRecord); }
         let currentMl = todayRecord.ml || 0;
 
         function saveData() {
             todayRecord.ml = Math.max(0, currentMl);
+            todayRecord.goal = goalMl;
             localStorage.setItem('waterGoal', goalMl);
             localStorage.setItem('bottleSize', bStep);
             localStorage.setItem('glassSize', gStep);
             localStorage.setItem('waterHistory', JSON.stringify(history));
+            updateWeekly();
         }
 
         function initUI() {
+            // Set Landing Screen to Screen 1 (Bottles)
+            const container = document.getElementById('swipe-container');
+            container.scrollLeft = window.innerWidth;
+
             document.getElementById('bottle-title').innerText = `Μπουκάλια (${bStep}ml)`;
             document.getElementById('glass-title').innerText = `Ποτήρια (${gStep}ml)`;
             const bGrid = document.getElementById('bottle-grid'); bGrid.innerHTML = '';
@@ -238,6 +256,31 @@
             for(let i=0; i<=goalMl; i+=100) {
                 const isMajor = (i % 500 === 0); const t = document.createElement('div'); t.className = 'tick' + (isMajor ? ' major' : ''); 
                 if (isMajor) t.innerText = i >= 1000 ? (i/1000)+'L' : i; dragZone.appendChild(t);
+            }
+            updateWeekly();
+        }
+
+        function updateWeekly() {
+            const grid = document.getElementById('weekly-grid');
+            grid.innerHTML = '';
+            const daysShort = ['ΚΥΡ','ΔΕΥ','ΤΡΙ','ΤΕΤ','ΠΕΜ','ΠΑΡ','ΣΑΒ'];
+            const now = new Date();
+            
+            for(let i=0; i<7; i++) {
+                const d = new Date();
+                d.setDate(now.getDate() - 6 + i); // Last 7 days
+                const ds = d.toLocaleDateString('el-GR');
+                const rec = history.find(h => h.date === ds);
+                const dayGoal = (rec && rec.goal) ? rec.goal : goalMl;
+                const perc = rec ? Math.min(100, (rec.ml / dayGoal) * 100) : 0;
+                
+                const row = document.createElement('div');
+                row.className = 'week-row';
+                row.innerHTML = `
+                    <div class="week-label">${daysShort[d.getDay()]}</div>
+                    <div class="week-bar-bg"><div class="week-bar-fill" style="width: ${perc}%"></div></div>
+                `;
+                grid.appendChild(row);
             }
         }
 
@@ -296,6 +339,8 @@
         };
 
         initUI(); updateUI();
+        // Landing delay to ensure rendering
+        setTimeout(() => { sc.scrollLeft = window.innerWidth; }, 100);
     </script>
 </body>
 </html>
