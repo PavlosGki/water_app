@@ -44,7 +44,7 @@
 
         .save-btn { background: #0a84ff; color: #fff; border: none; padding: 18px; border-radius: 15px; font-weight: bold; width: 100%; font-size: 16px; }
 
-        /* Swipe container */
+        /* Main Scroll Container */
         #swipe-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
         #swipe-container::-webkit-scrollbar { display: none; }
         .screen { flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
@@ -61,21 +61,22 @@
         .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 80px; }
         .glass-wrap { width: 75px; height: 100px; cursor: pointer; position: relative; }
 
-        /* Pitcher Screen & Horizontal Slider */
-        .pitcher-container { position: relative; width: 100%; height: 350px; margin-top: -40px; display: flex; justify-content: center; align-items: center; }
-        #pitcher-wrap { width: 200px; height: 300px; position: relative; pointer-events: none; }
-        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 22px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        /* Pitcher Screen & Vertical Slider */
+        .pitcher-container { position: relative; width: 100%; height: 380px; display: flex; justify-content: center; align-items: center; }
+        #pitcher-wrap { width: 220px; height: 320px; position: relative; pointer-events: none; }
+        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
+        /* New Vertical Slider on the Right Edge */
         #pitcher-drag-zone { 
-            position: absolute; bottom: 130px; width: 90%; height: 80px;
-            display: flex; flex-direction: row; justify-content: space-between; align-items: flex-end;
-            cursor: ew-resize; touch-action: none; background: rgba(255,255,255,0.03); 
-            border-radius: 15px; padding: 15px; z-index: 10;
+            position: absolute; right: 0; top: 0; width: 100px; height: 100vh;
+            display: flex; flex-direction: column-reverse; justify-content: space-between; 
+            cursor: ns-resize; touch-action: none; background: rgba(255,255,255,0.02); 
+            padding: 100px 10px; z-index: 10;
         }
-        .tick { font-size: 10px; color: #636366; display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-        .tick::after { content: ''; width: 2px; height: 12px; background: #48484a; }
+        .tick { font-size: 10px; color: #636366; display: flex; align-items: center; justify-content: flex-end; gap: 8px; width: 100%; }
+        .tick::after { content: ''; width: 15px; height: 1px; background: #48484a; }
         .tick.major { color: #8e8e93; font-weight: bold; }
-        .tick.major::after { height: 20px; background: #636366; }
+        .tick.major::after { width: 25px; height: 2px; background: #636366; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -84,7 +85,7 @@
         .splash-drop { position: absolute; top: 10px; left: 50%; width: 40px; height: 60px; background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5; }
         @keyframes splash { 0% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; } }
 
-        /* Nav Dots */
+        /* Dots Navigation */
         .dots { position: fixed; bottom: 90px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 5; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
         .dot.active { background: #f2f2f7; }
@@ -141,7 +142,7 @@
         <div class="screen">
             <div class="title-container">
                 <h1>Κανάτα</h1>
-                <p class="subtitle">Σύρε οριζόντια στο κάτω μέρος</p>
+                <p class="subtitle">Σύρε τον δοσομετρητή στα δεξιά</p>
             </div>
             <div class="pitcher-container">
                 <div id="pitcher-wrap">
@@ -192,7 +193,7 @@
         }
 
         function initUI() {
-            // Bottles
+            // Screen 1: Bottles
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
             let numB = Math.ceil(goalMl / B_STEP);
@@ -209,7 +210,7 @@
                 bGrid.appendChild(wrap);
             }
 
-            // Glasses
+            // Screen 2: Glasses
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
             let numG = Math.ceil(goalMl / G_STEP);
@@ -226,23 +227,22 @@
                 gGrid.appendChild(wrap);
             }
 
-            // Horizontal Ticks
+            // Vertical Slider Ticks
             const dragZone = document.getElementById('pitcher-drag-zone');
             dragZone.innerHTML = '';
-            for(let i=0; i<=goalMl; i+=STEP_TICK(goalMl)) {
+            for(let i=0; i<=goalMl; i+=500) {
                 const t = document.createElement('div'); 
                 t.className = 'tick' + (i % 1000 === 0 ? ' major' : ''); 
-                t.innerText = i >= 1000 ? (i/1000)+'L' : i;
+                t.innerText = i >= 1000 ? (i/1000)+'L' : (i === 0 ? '0' : i);
                 dragZone.appendChild(t);
             }
         }
-
-        function STEP_TICK(goal) { return goal > 4000 ? 1000 : 500; }
 
         function updateUI() {
             const total = Math.max(0, currentMl);
             document.getElementById('global-display').innerText = `${total} / ${goalMl} ml`;
 
+            // All screens linear sync
             document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => {
                 let bottleFill = Math.max(0, Math.min(B_STEP, total - (i * B_STEP)));
                 rect.style.transform = `translateY(${200 - (bottleFill/B_STEP * 200)}px)`;
@@ -280,14 +280,15 @@
             }, 350);
         }
 
-        // --- Horizontal Drag Logic ---
-        let isDrag = false, sX = 0, startMlValue = 0;
+        // --- Improved Vertical Drag Logic (Far Right) ---
+        let isDrag = false, sY = 0, startMlValue = 0;
         const dragZone = document.getElementById('pitcher-drag-zone');
-        dragZone.ontouchstart = e => { isDrag = true; sX = e.touches[0].clientX; startMlValue = currentMl; };
+        dragZone.ontouchstart = e => { isDrag = true; sY = e.touches[0].clientY; startMlValue = currentMl; };
         dragZone.ontouchmove = e => {
             if(!isDrag) return;
-            let deltaSteps = Math.round((e.touches[0].clientX - sX) / 15);
-            currentMl = Math.max(0, startMlValue + (deltaSteps * 50)); // Accuracy of 50ml per move
+            // Sensitive drag: approximately 25px per 350ml step
+            let deltaSteps = Math.round((sY - e.touches[0].clientY) / 25);
+            currentMl = Math.max(0, startMlValue + (deltaSteps * 50)); // Precision to 50ml
             updateUI();
         };
         dragZone.ontouchend = () => { isDrag = false; saveData(); updateUI(); };
