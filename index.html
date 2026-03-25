@@ -71,8 +71,8 @@
             position: absolute;
             top: 10px; 
             left: 50%;
-            width: 10px; /* Αύξηση από 6px σε 10px */
-            height: 16px; /* Αύξηση από 10px σε 16px */
+            width: 16px; /* Αύξηση από 6px σε 10px */
+            height: 24px; /* Αύξηση από 10px σε 16px */
             background-color: #0a84ff; 
             border-radius: 50%;
             pointer-events: none; 
@@ -252,8 +252,8 @@
                     drop.classList.add('splash-drop');
                     
                     // ΑΛΛΑΓΗ: Λίγο μεγαλύτερη εξάπλωση (spread) για τις σταγόνες
-                    const tx = (Math.random() - 0.5) * 110; 
-                    const ty = -(Math.random() * 60 + 20); 
+                    const tx = (Math.random() - 0.5) * 160; 
+                    const ty = -(Math.random() * 60 + 30); 
                     
                     drop.style.setProperty('--tx', `${tx}px`);
                     drop.style.setProperty('--ty', `${ty}px`);
