@@ -15,7 +15,7 @@
             overflow: hidden; touch-action: none; 
         }
 
-        /* Header Stats */
+        /* Global Header Stats */
         .global-stats {
             position: absolute; top: 25px; left: 20px; z-index: 50;
             font-size: 14px; font-weight: 700; color: #0a84ff; background: rgba(10, 132, 255, 0.15);
@@ -25,7 +25,7 @@
         .top-bar { position: absolute; top: 20px; right: 20px; z-index: 50; }
         .icon-btn { background: none; border: none; color: #8e8e93; padding: 10px; cursor: pointer; }
         
-        /* Settings - Φαρδύ Slider */
+        /* Settings Modal */
         #settings-modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); backdrop-filter: blur(15px);
@@ -38,13 +38,13 @@
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 35px 0; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 14px; background: #3a3a3c; border-radius: 7px; }
         input[type=range]::-webkit-slider-thumb { 
-            height: 36px; width: 36px; border-radius: 50%; background: #0a84ff;
-            -webkit-appearance: none; margin-top: -11px; box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            height: 38px; width: 38px; border-radius: 50%; background: #0a84ff;
+            -webkit-appearance: none; margin-top: -12px; box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
 
         .save-btn { background: #0a84ff; color: #fff; border: none; padding: 18px; border-radius: 15px; font-weight: bold; width: 100%; font-size: 16px; }
 
-        /* Swipe Layout */
+        /* Main Layout */
         #swipe-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
         #swipe-container::-webkit-scrollbar { display: none; }
         .screen { flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
@@ -64,20 +64,20 @@
         /* Pitcher */
         .pitcher-container { position: relative; width: 240px; height: 320px; margin-top: 60px; display: flex; align-items: center; }
         #pitcher-wrap { width: 160px; height: 260px; position: relative; pointer-events: none; }
-        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 19px; font-weight: 900; color: white; text-align: center; width: 100%; }
+        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; font-weight: 900; color: white; text-align: center; width: 100%; }
         
         #pitcher-drag-zone { width: 80px; height: 100%; padding-left: 15px; display: flex; flex-direction: column-reverse; justify-content: space-between; cursor: ns-resize; touch-action: none; }
         .tick { font-size: 11px; color: #8e8e93; display: flex; align-items: center; gap: 6px; }
         .tick::before { content: ''; width: 12px; height: 2px; background: #48484a; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
-        .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(200px); }
+        .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 
         /* Splash */
         .splash-drop { position: absolute; top: 10px; left: 50%; width: 40px; height: 60px; background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5; }
         @keyframes splash { 0% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; } }
 
-        /* Dots & History */
+        /* Nav & History */
         .dots { position: fixed; bottom: 90px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 10; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
         .dot.active { background: #f2f2f7; }
@@ -87,6 +87,7 @@
         .history-header-tab { height: 65px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
         .drag-handle { width: 36px; height: 5px; background-color: #48484a; border-radius: 3px; margin-bottom: 8px; }
         .tab-label { font-size: 11px; font-weight: 700; color: #8e8e93; text-transform: uppercase; letter-spacing: 1.5px; }
+        .history-content { padding: 0 30px 40px; overflow-y: auto; height: calc(100% - 65px); }
     </style>
 </head>
 <body>
@@ -124,7 +125,7 @@
             <div class="glass-grid" id="glass-grid"></div>
         </div>
         <div class="screen">
-            <div class="title-container"><h1>Κανάτα</h1><p class="subtitle">Σύρε τον δοσομετρητή (±350ml)</p></div>
+            <div class="title-container"><h1>Κανάτα</h1><p class="subtitle">Συνολικό άθροισμα (±350ml)</p></div>
             <div class="pitcher-container">
                 <div id="pitcher-wrap">
                     <svg class="svg-obj" viewBox="0 0 200 300">
@@ -149,7 +150,7 @@
             <div class="drag-handle"></div>
             <div class="tab-label">Ιστορικό</div>
         </div>
-        <div class="history-content" id="history-list-container" style="padding: 0 30px 40px;"></div>
+        <div class="history-content" id="history-list-container"></div>
     </div>
 
     <script>
@@ -164,26 +165,26 @@
             todayRecord = { date: today, bottleStates: Array(7).fill(false), glassStates: Array(20).fill(false), pitcherExtraMl: 0 };
             history.unshift(todayRecord);
         }
-
-        // Εξασφάλιση ότι υπάρχουν τα states
-        if(!todayRecord.bottleStates) todayRecord.bottleStates = Array(7).fill(false);
-        if(!todayRecord.glassStates) todayRecord.glassStates = Array(20).fill(false);
-        if(!todayRecord.pitcherExtraMl) todayRecord.pitcherExtraMl = 0;
+        
+        // Έλεγχος για παλιά δεδομένα
+        if (!todayRecord.bottleStates) todayRecord.bottleStates = Array(7).fill(false);
+        if (!todayRecord.glassStates) todayRecord.glassStates = Array(20).fill(false);
+        if (todayRecord.pitcherExtraMl === undefined) todayRecord.pitcherExtraMl = 0;
 
         function calculateTotal() {
-            let b = todayRecord.bottleStates.filter(s => s).length * 1000;
-            let g = todayRecord.glassStates.filter(s => s).length * 350;
-            return b + g + todayRecord.pitcherExtraMl;
+            let bMl = todayRecord.bottleStates.filter(s => s).length * 1000;
+            let gMl = todayRecord.glassStates.filter(s => s).length * 350;
+            return bMl + gMl + todayRecord.pitcherExtraMl;
         }
 
         function saveData() {
-            todayRecord.ml = calculateTotal(); // Αποθηκεύουμε το σύνολο για το ιστορικό
+            todayRecord.ml = calculateTotal();
             localStorage.setItem('waterGoal', goalMl);
             localStorage.setItem('waterHistory', JSON.stringify(history));
         }
 
         function initUI() {
-            // Bottles
+            // Screen 1: Independent Bottles
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
             let numB = Math.ceil(goalMl / 1000);
@@ -207,7 +208,7 @@
                 bGrid.appendChild(wrap);
             }
 
-            // Glasses
+            // Screen 2: Independent Glasses
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
             let numG = Math.ceil(goalMl / STEP);
@@ -229,11 +230,9 @@
                 gGrid.appendChild(wrap);
             }
 
-            // Pitcher Ticks
             const ticks = document.getElementById('pitcher-drag-zone');
             ticks.innerHTML = '';
-            let numTicks = Math.floor(goalMl / 1000);
-            for(let i=0; i<=numTicks; i++) {
+            for(let i=0; i<=Math.floor(goalMl/1000); i++) {
                 const t = document.createElement('div'); t.className = 'tick'; t.innerText = i+'L';
                 ticks.appendChild(t);
             }
@@ -243,27 +242,27 @@
             const total = calculateTotal();
             document.getElementById('global-display').innerText = `${total} / ${goalMl} ml`;
 
-            // Sync Bottles (Independent Toggle)
+            // Update Bottles (Specific State)
             document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => {
                 rect.style.transform = todayRecord.bottleStates[i] ? 'translateY(0px)' : 'translateY(200px)';
             });
 
-            // Sync Glasses (Independent Toggle)
+            // Update Glasses (Specific State)
             document.querySelectorAll('#glass-grid .water-fill').forEach((rect, i) => {
                 rect.style.transform = todayRecord.glassStates[i] ? 'translateY(0px)' : 'translateY(150px)';
             });
 
-            // Pitcher (Linear Sync with total)
+            // Update Pitcher (Linear Sync)
             let pPercent = Math.min(1, total / goalMl);
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
             document.getElementById('pitcher-text').innerText = total + ' ml';
 
-            // History
+            // Update History
             const container = document.getElementById('history-list-container');
             container.innerHTML = '';
             history.forEach(h => {
                 const div = document.createElement('div');
-                div.style.cssText = "display:flex; justify-content:space-between; padding:18px 0; border-bottom:1px solid #2c2c2e; font-size:17px;";
+                div.style.cssText = "display:flex; justify-content:space-between; padding:18px 0; border-bottom:1px solid #2c2c2e;";
                 div.innerHTML = `<span>${h.date === today ? 'Σήμερα' : h.date}</span><span style="color:#0a84ff; font-weight:bold">${h.ml || 0} ml</span>`;
                 container.appendChild(div);
             });
@@ -282,7 +281,6 @@
             }, 350);
         }
 
-        // Pitcher Drag Logic
         let isDrag = false, sY = 0, startExtra = 0;
         const dragZone = document.getElementById('pitcher-drag-zone');
         dragZone.ontouchstart = e => { isDrag = true; sY = e.touches[0].clientY; startExtra = todayRecord.pitcherExtraMl; };
@@ -294,7 +292,6 @@
         };
         dragZone.ontouchend = () => { isDrag = false; saveData(); };
 
-        // Settings Modal
         const mod = document.getElementById('settings-modal'), sli = document.getElementById('goal-slider'), val = document.getElementById('goal-val');
         document.getElementById('open-settings').onclick = () => { sli.value = goalMl; val.innerText = goalMl; mod.classList.add('open'); };
         sli.oninput = e => val.innerText = e.target.value;
@@ -303,11 +300,9 @@
             saveData(); mod.classList.remove('open'); initUI(); updateUI();
         };
 
-        // Swipe & Dots
         const sc = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
         sc.onscroll = () => { let i = Math.round(sc.scrollLeft / window.innerWidth); ds.forEach((d, k) => d.classList.toggle('active', k === i)); };
 
-        // History Swipe
         let sheet = document.getElementById('history-sheet'), hSY = 0;
         document.getElementById('history-tab').ontouchstart = e => hSY = e.touches[0].clientY;
         document.getElementById('history-tab').ontouchend = e => {
