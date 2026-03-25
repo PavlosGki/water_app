@@ -50,28 +50,19 @@
         h1 { margin: 0; font-size: 24px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
 
-        /* Διορθωμένο πλέγμα για τα μπουκάλια: Πιο "ανοιχτό" και φαρδύ */
-        .bottle-grid { 
+        /* Κοινό στυλ πλέγματος για Μπουκάλια και Ποτήρια */
+        .bottle-grid, .glass-grid { 
             display: grid; 
-            grid-template-columns: repeat(3, 1fr); /* 3 ισόποσες στήλες */
+            grid-template-columns: repeat(3, 1fr); 
             justify-items: center; 
             align-content: center; 
-            width: 90%;          /* Πιάνει περισσότερο πλάτος */
+            width: 92%; 
             max-width: 500px;
-            height: 60vh;        /* Πιο ψηλό πλέγμα */
+            height: 60vh; 
             margin-top: 50px;
-            gap: 25px 40px;      /* Μεγαλύτερα κενά οριζόντια/κάθετα */
         }
-
-        .glass-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, auto); 
-            justify-content: center; 
-            align-content: center; 
-            height: 50vh; 
-            margin-top: 60px;
-            gap: 15px 20px;
-        }
+        .bottle-grid { gap: 25px 35px; }
+        .glass-grid { gap: 18px 25px; } /* Ελαφρώς μικρότερο gap για τα ποτήρια επειδή είναι περισσότερα */
 
         .bottle-wrap, .glass-wrap { cursor: pointer; position: relative; display: flex; justify-content: center; align-items: center; }
 
@@ -84,7 +75,7 @@
             position: absolute; 
             right: 0; 
             top: 140px; 
-            bottom: 160px; 
+            bottom: 160px; /* Safe Zone πάνω από το ιστορικό */
             width: 105px;
             background: #1c1c1e; 
             border-radius: 35px 0 0 35px;
@@ -206,13 +197,12 @@
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
             let numB = Math.ceil(goalMl / B_STEP);
-            // Sizing optimization for bottles
-            let bScale = numB > 4 ? 0.85 : 1.1; // Larger scale when fewer bottles
+            let bScale = numB > 3 ? 0.9 : 1.1; 
             for (let i = 0; i < numB; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'bottle-wrap';
-                wrap.style.width = (80 * bScale) + 'px';
-                wrap.style.height = (160 * bScale) + 'px';
+                wrap.style.width = (75 * bScale) + 'px';
+                wrap.style.height = (150 * bScale) + 'px';
                 wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200"><g clip-path="url(#bottleMask)"><rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/></g><rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/></svg>`;
                 wrap.onclick = () => {
                     let threshold = (i + 1) * B_STEP;
@@ -223,11 +213,11 @@
                 bGrid.appendChild(wrap);
             }
 
-            // Glasses UI
+            // Glasses UI (Updated to match bottle grid style)
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
             let numG = Math.ceil(goalMl / G_STEP);
-            let gScale = numG > 9 ? 0.75 : 1;
+            let gScale = numG > 9 ? 0.8 : 1.0; 
             for (let i = 0; i < numG; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'glass-wrap';
