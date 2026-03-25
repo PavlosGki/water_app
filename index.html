@@ -58,12 +58,13 @@
         h1 { margin: 0; font-size: 22px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
 
-        /* Weekly Status Styles */
-        .weekly-grid { display: flex; flex-direction: column; width: 85%; gap: 15px; margin-top: 60px; }
+        /* Weekly Status Styles Updated */
+        .weekly-grid { display: flex; flex-direction: column; width: 90%; gap: 15px; margin-top: 60px; }
         .week-row { display: flex; align-items: center; gap: 12px; width: 100%; }
         .week-label { width: 35px; font-size: 11px; color: #8e8e93; font-weight: 700; text-transform: uppercase; }
-        .week-bar-bg { flex: 1; height: 12px; background: #1c1c1e; border-radius: 6px; position: relative; overflow: hidden; }
-        .week-bar-fill { position: absolute; left: 0; height: 100%; background: #0a84ff; transition: width 0.8s ease-out; }
+        .week-bar-bg { flex: 1; height: 22px; background: #1c1c1e; border-radius: 11px; position: relative; overflow: hidden; }
+        .week-bar-fill { position: absolute; left: 0; height: 100%; background: #0a84ff; transition: width 0.8s ease-out; box-shadow: 0 0 10px rgba(10, 132, 255, 0.3); }
+        .week-perc { width: 45px; font-size: 11px; color: #0a84ff; font-weight: 800; text-align: right; }
 
         .bottle-grid, .glass-grid { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; align-content: center; width: 92%; max-width: 500px; height: 60vh; margin-top: 50px; }
         .bottle-grid { gap: 20px 30px; }
@@ -279,6 +280,7 @@
                 row.innerHTML = `
                     <div class="week-label">${daysShort[d.getDay()]}</div>
                     <div class="week-bar-bg"><div class="week-bar-fill" style="width: ${perc}%"></div></div>
+                    <div class="week-perc" style="width: 45px; font-size: 11px; color: #0a84ff; font-weight: 800; text-align: right;">${Math.round(perc)}%</div>
                 `;
                 grid.appendChild(row);
             }
