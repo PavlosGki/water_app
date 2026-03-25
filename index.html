@@ -50,7 +50,6 @@
         h1 { margin: 0; font-size: 24px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
 
-        /* Grids */
         .bottle-grid { display: grid; grid-template-columns: repeat(2, 90px); gap: 20px 40px; margin-top: 60px; }
         .bottle-wrap { width: 90px; height: 180px; cursor: pointer; position: relative; }
         .bottle-wrap.center-odd { grid-column: 1 / span 2; justify-self: center; }
@@ -58,33 +57,33 @@
         .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 80px; }
         .glass-wrap { width: 75px; height: 100px; cursor: pointer; position: relative; }
 
-        /* Pitcher Screen */
-        .pitcher-container { position: relative; width: 100%; height: 350px; display: flex; justify-content: center; align-items: center; padding-right: 60px; }
+        /* Pitcher Container */
+        .pitcher-container { position: relative; width: 100%; height: 350px; display: flex; justify-content: center; align-items: center; padding-right: 80px; }
         #pitcher-wrap { width: 220px; height: 300px; position: relative; pointer-events: none; }
         .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
-        /* Σταθερός Vertical Slider στα δεξιά */
+        /* Διορθωμένος Slider: Μεγαλύτερο Ύψος & Σταθερή Θέση */
         #pitcher-drag-zone { 
             position: absolute; 
             right: 15px; 
-            top: 145px; /* Κάτω από τον τίτλο */
-            bottom: 115px; /* Πάνω από το ιστορικό/dots */
-            width: 75px; 
+            top: 130px;    /* Ξεκινάει κάτω από τον τίτλο */
+            bottom: 100px;  /* Σταματάει πάνω από τις τελείες/ιστορικό */
+            width: 85px;   /* Λίγο πιο φαρδύ για καλύτερο grip */
             background: #1c1c1e; 
-            border-radius: 20px;
+            border-radius: 25px;
             display: flex; 
             flex-direction: column-reverse; 
             justify-content: space-between; 
             cursor: ns-resize; 
             touch-action: none; 
-            padding: 25px 0;
+            padding: 30px 0;
             z-index: 10;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.5);
         }
         .tick { font-size: 10px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
         .tick::after { content: ''; width: 10px; height: 1px; background: #48484a; }
         .tick.major { color: #8e8e93; font-weight: bold; }
-        .tick.major::after { width: 18px; height: 2px; background: #636366; }
+        .tick.major::after { width: 20px; height: 2px; background: #636366; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -92,7 +91,7 @@
         .splash-drop { position: absolute; top: 10px; left: 50%; width: 40px; height: 60px; background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5; }
         @keyframes splash { 0% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; } }
 
-        .dots { position: fixed; bottom: 90px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 5; }
+        .dots { position: fixed; bottom: 85px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 5; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
         .dot.active { background: #f2f2f7; }
 
@@ -117,7 +116,7 @@
     <div class="global-stats" id="global-display">0 / 5250 ml</div>
 
     <div class="top-bar">
-        <button class="icon-btn" id="open-settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+        <button class="icon-btn" id="open-settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
     </div>
 
     <div id="settings-modal">
@@ -131,24 +130,15 @@
 
     <div id="swipe-container">
         <div class="screen">
-            <div class="title-container">
-                <h1>Μπουκάλια (750ml)</h1>
-                <p class="subtitle">Άγγιξε για να προσθέσεις</p>
-            </div>
+            <div class="title-container"><h1>Μπουκάλια (750ml)</h1><p class="subtitle">Άγγιξε για να προσθέσεις</p></div>
             <div class="bottle-grid" id="bottle-grid"></div>
         </div>
         <div class="screen">
-            <div class="title-container">
-                <h1>Ποτήρια (350ml)</h1>
-                <p class="subtitle">Άγγιξε για να προσθέσεις</p>
-            </div>
+            <div class="title-container"><h1>Ποτήρια (350ml)</h1><p class="subtitle">Άγγιξε για να προσθέσεις</p></div>
             <div class="glass-grid" id="glass-grid"></div>
         </div>
         <div class="screen">
-            <div class="title-container">
-                <h1>Κανάτα</h1>
-                <p class="subtitle">Σύρε τον δοσομετρητή στα δεξιά</p>
-            </div>
+            <div class="title-container"><h1>Κανάτα</h1><p class="subtitle">Σύρε τον δοσομετρητή στα δεξιά</p></div>
             <div class="pitcher-container">
                 <div id="pitcher-wrap">
                     <svg class="svg-obj" viewBox="0 0 200 300">
@@ -230,7 +220,6 @@
                 gGrid.appendChild(wrap);
             }
 
-            // Slider Ticks
             const dragZone = document.getElementById('pitcher-drag-zone');
             dragZone.innerHTML = '';
             for(let i=0; i<=goalMl; i+=500) {
@@ -282,7 +271,7 @@
             }, 350);
         }
 
-        // --- FIXED VERTICAL DRAG LOGIC ---
+        // --- FIXED DRAG LOGIC FOR LARGER AREA ---
         let isDrag = false;
         const dragZone = document.getElementById('pitcher-drag-zone');
         
@@ -294,9 +283,8 @@
             const rect = dragZone.getBoundingClientRect();
             const y = e.touches[0].clientY - rect.top;
             const percentage = 1 - (y / rect.height);
-            // Clamp percentage between 0 and 1
             const clamped = Math.max(0, Math.min(1, percentage));
-            currentMl = Math.round((clamped * goalMl) / 50) * 50; // Accuracy 50ml
+            currentMl = Math.round((clamped * goalMl) / 50) * 50; 
             updateUI();
         }
 
