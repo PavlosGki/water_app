@@ -50,20 +50,32 @@
         h1 { margin: 0; font-size: 24px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
 
-        /* Grids - Both are 3 columns now */
-        .bottle-grid, .glass-grid { 
+        /* Διορθωμένο πλέγμα για τα μπουκάλια: Πιο "ανοιχτό" και φαρδύ */
+        .bottle-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* 3 ισόποσες στήλες */
+            justify-items: center; 
+            align-content: center; 
+            width: 90%;          /* Πιάνει περισσότερο πλάτος */
+            max-width: 500px;
+            height: 60vh;        /* Πιο ψηλό πλέγμα */
+            margin-top: 50px;
+            gap: 25px 40px;      /* Μεγαλύτερα κενά οριζόντια/κάθετα */
+        }
+
+        .glass-grid { 
             display: grid; 
             grid-template-columns: repeat(3, auto); 
             justify-content: center; 
             align-content: center; 
-            height: 55vh; 
+            height: 50vh; 
             margin-top: 60px;
             gap: 15px 20px;
         }
 
-        .bottle-wrap, .glass-wrap { cursor: pointer; position: relative; }
+        .bottle-wrap, .glass-wrap { cursor: pointer; position: relative; display: flex; justify-content: center; align-items: center; }
 
-        /* Pitcher Container */
+        /* Pitcher Screen */
         .pitcher-container { position: relative; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; }
         #pitcher-wrap { width: 220px; height: 300px; position: relative; pointer-events: none; }
         .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 900; color: white; text-align: center; width: 100%; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
@@ -71,9 +83,8 @@
         #pitcher-drag-zone { 
             position: absolute; 
             right: 0; 
-            top: 50%;
-            transform: translateY(-45%); 
-            height: 75vh; 
+            top: 140px; 
+            bottom: 160px; 
             width: 105px;
             background: #1c1c1e; 
             border-radius: 35px 0 0 35px;
@@ -82,14 +93,14 @@
             justify-content: space-between; 
             cursor: ns-resize; 
             touch-action: none; 
-            padding: 40px 0;
+            padding: 30px 0;
             z-index: 10;
             box-shadow: -5px 0 25px rgba(0,0,0,0.6);
         }
         .tick { font-size: 11px; color: #636366; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .tick::after { content: ''; width: 15px; height: 1px; background: #48484a; }
+        .tick::after { content: ''; width: 12px; height: 1px; background: #48484a; }
         .tick.major { color: #8e8e93; font-weight: 800; }
-        .tick.major::after { width: 25px; height: 2px; background: #636366; }
+        .tick.major::after { width: 20px; height: 2px; background: #636366; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -195,18 +206,18 @@
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
             let numB = Math.ceil(goalMl / B_STEP);
-            // Dynamic sizing for bottles in 3-column grid
-            let bSize = numB > 3 ? 120 : 150; 
+            // Sizing optimization for bottles
+            let bScale = numB > 4 ? 0.85 : 1.1; // Larger scale when fewer bottles
             for (let i = 0; i < numB; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'bottle-wrap';
-                wrap.style.width = (bSize * 0.5) + 'px';
-                wrap.style.height = bSize + 'px';
+                wrap.style.width = (80 * bScale) + 'px';
+                wrap.style.height = (160 * bScale) + 'px';
                 wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200"><g clip-path="url(#bottleMask)"><rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/></g><rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/></svg>`;
                 wrap.onclick = () => {
                     let threshold = (i + 1) * B_STEP;
                     if (currentMl >= threshold) currentMl = Math.max(0, threshold - B_STEP);
-                    else { currentMl = threshold; createSplash(wrap); }
+                    else currentMl = threshold;
                     saveData(); updateUI();
                 };
                 bGrid.appendChild(wrap);
@@ -216,12 +227,12 @@
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
             let numG = Math.ceil(goalMl / G_STEP);
-            let gSize = numG > 9 ? 80 : 100;
+            let gScale = numG > 9 ? 0.75 : 1;
             for (let i = 0; i < numG; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'glass-wrap';
-                wrap.style.width = (gSize * 0.75) + 'px';
-                wrap.style.height = gSize + 'px';
+                wrap.style.width = (65 * gScale) + 'px';
+                wrap.style.height = (90 * gScale) + 'px';
                 wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 150"><g clip-path="url(#glassMask)"><rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)"/></g><path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="90" fill="rgba(255,255,255,0.6)" font-size="14" font-weight="bold" text-anchor="middle">350</text></svg>`;
                 wrap.onclick = () => {
                     let threshold = (i + 1) * G_STEP;
@@ -232,7 +243,6 @@
                 gGrid.appendChild(wrap);
             }
 
-            // Slider Ticks
             const dragZone = document.getElementById('pitcher-drag-zone');
             dragZone.innerHTML = '';
             for(let i=0; i<=goalMl; i+=500) {
@@ -269,19 +279,6 @@
                 div.innerHTML = `<span>${h.date === today ? 'Σήμερα' : h.date}</span><span style="color:#0a84ff; font-weight:bold">${h.ml || 0} ml</span>`;
                 container.appendChild(div);
             });
-        }
-
-        function createSplash(el) {
-            setTimeout(() => {
-                for (let i = 0; i < 6; i++) {
-                    const d = document.createElement('div'); d.className = 'splash-drop';
-                    const tx = (Math.random() - 0.5) * 350, ty = -(Math.random() * 200 + 100);
-                    d.style.setProperty('--tx', tx+'px'); d.style.setProperty('--ty', ty+'px');
-                    const dur = 0.7 + Math.random() * 0.5;
-                    d.style.animation = `splash ${dur}s ease-out forwards`;
-                    el.appendChild(d); setTimeout(() => d.remove(), dur * 1000);
-                }
-            }, 350);
         }
 
         let isDrag = false;
