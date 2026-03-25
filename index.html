@@ -15,57 +15,65 @@
             overflow: hidden; touch-action: none; 
         }
 
+        /* Header & Info */
         .top-bar { position: absolute; top: 20px; right: 20px; z-index: 50; }
         .icon-btn { background: none; border: none; color: #8e8e93; padding: 10px; cursor: pointer; }
         
+        .global-stats {
+            position: absolute; top: 25px; left: 20px; z-index: 50;
+            font-size: 14px; font-weight: 600; color: #0a84ff; background: rgba(10, 132, 255, 0.1);
+            padding: 5px 12px; border-radius: 15px; border: 1px solid rgba(10, 132, 255, 0.3);
+        }
+
+        /* Settings Modal */
         #settings-modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
             z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         #settings-modal.open { opacity: 1; pointer-events: auto; }
-        .settings-box { background: #1c1c1e; padding: 30px; border-radius: 20px; text-align: center; width: 80%; }
-        .settings-box input { width: 100%; margin: 20px 0; accent-color: #0a84ff; }
-        .save-btn { background: #0a84ff; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; width: 100%; }
-
-        #swipe-container {
-            display: flex; width: 100vw; height: 100vh;
-            overflow-x: auto; scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-        }
-        #swipe-container::-webkit-scrollbar { display: none; }
+        .settings-box { background: #1c1c1e; padding: 40px 30px; border-radius: 25px; text-align: center; width: 85%; }
         
-        .screen {
-            flex: 0 0 100vw; height: 100vh; scroll-snap-align: start;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative;
+        /* Φαρδύ Slider */
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent; margin: 30px 0;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 12px; cursor: pointer; background: #3a3a3c; border-radius: 6px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 32px; width: 32px; border-radius: 50%; background: #0a84ff;
+            cursor: pointer; -webkit-appearance: none; margin-top: -10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        .title-container { text-align: center; position: absolute; top: 60px; width: 100%; }
-        h1 { margin: 0; font-size: 26px; font-weight: 700; }
-        .subtitle { color: #8e8e93; font-size: 14px; margin-top: 5px; }
+        .save-btn { background: #0a84ff; color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: bold; width: 100%; font-size: 16px; }
 
-        .bottle-grid { display: grid; grid-template-columns: repeat(2, 90px); gap: 20px 40px; margin-top: 40px; }
+        /* Swipe Logic */
+        #swipe-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
+        #swipe-container::-webkit-scrollbar { display: none; }
+        .screen { flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+
+        .title-container { text-align: center; position: absolute; top: 80px; width: 100%; }
+        h1 { margin: 0; font-size: 24px; font-weight: 700; }
+        .subtitle { color: #8e8e93; font-size: 13px; margin-top: 4px; }
+
+        /* Grids */
+        .bottle-grid { display: grid; grid-template-columns: repeat(2, 90px); gap: 20px 40px; margin-top: 50px; }
         .bottle-wrap { width: 90px; height: 180px; cursor: pointer; position: relative; }
         .bottle-wrap.center-odd { grid-column: 1 / span 2; justify-self: center; }
 
-        .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 60px; }
+        .glass-grid { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px 20px; margin-top: 80px; }
         .glass-wrap { width: 75px; height: 100px; cursor: pointer; position: relative; }
 
         /* Pitcher */
-        .pitcher-container { position: relative; width: 260px; height: 320px; margin-top: 40px; display: flex; align-items: center; }
-        #pitcher-wrap { width: 180px; height: 280px; pointer-events: none; }
-        .pitcher-text { position: absolute; top: 50%; left: 35%; transform: translate(-50%, -50%); font-size: 28px; font-weight: bold; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .pitcher-container { position: relative; width: 240px; height: 320px; margin-top: 50px; display: flex; align-items: center; }
+        #pitcher-wrap { width: 160px; height: 260px; pointer-events: none; position: relative; }
+        .pitcher-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; font-weight: 800; color: white; text-align: center; width: 100%; pointer-events: none; }
         
-        /* Drag Zone Ticks */
-        #pitcher-drag-zone { 
-            width: 80px; height: 100%; padding-left: 20px;
-            display: flex; flex-direction: column-reverse; justify-content: space-between;
-            cursor: ns-resize; touch-action: none; 
-        }
-        .tick { font-size: 12px; color: #8e8e93; display: flex; align-items: center; gap: 8px; height: 20px; }
-        .tick::before { content: ''; width: 15px; height: 2px; background: #48484a; }
+        #pitcher-drag-zone { width: 80px; height: 100%; padding-left: 15px; display: flex; flex-direction: column-reverse; justify-content: space-between; cursor: ns-resize; touch-action: none; }
+        .tick { font-size: 11px; color: #8e8e93; display: flex; align-items: center; gap: 6px; }
+        .tick::before { content: ''; width: 12px; height: 2px; background: #48484a; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
         .water-fill { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -74,28 +82,16 @@
         .splash-drop { position: absolute; top: 10px; left: 50%; width: 40px; height: 60px; background-color: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 5; }
         @keyframes splash { 0% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0); opacity: 0; } }
 
-        /* Dots */
-        .dots { position: fixed; bottom: 85px; width: 100vw; display: flex; justify-content: center; gap: 8px; pointer-events: none; z-index: 10; }
+        /* History */
+        .dots { position: fixed; bottom: 85px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 10; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
         .dot.active { background: #f2f2f7; }
 
-        /* --- History Sheet & Tab --- */
-        #history-sheet { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh; 
-            background-color: #1c1c1e; border-radius: 30px 30px 0 0; z-index: 60; 
-            transform: translateY(calc(100% - 65px)); /* Προεξέχει 65px για να φαίνεται το "Ιστορικό" */
-            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); 
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-        }
+        #history-sheet { position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh; background-color: #1c1c1e; border-radius: 30px 30px 0 0; z-index: 60; transform: translateY(calc(100% - 65px)); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
         #history-sheet.open { transform: translateY(0); }
-        
-        .history-header-tab {
-            height: 65px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
-        }
+        .history-header-tab { height: 65px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
         .drag-handle { width: 36px; height: 5px; background-color: #48484a; border-radius: 3px; margin-bottom: 8px; }
-        .tab-label { font-size: 13px; font-weight: 500; color: #8e8e93; letter-spacing: 0.5px; text-transform: uppercase; }
-
-        .history-content { padding: 0 30px 30px 30px; overflow-y: auto; height: calc(100% - 65px); }
+        .tab-label { font-size: 12px; font-weight: 600; color: #8e8e93; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -108,41 +104,32 @@
         </defs>
     </svg>
 
+    <div class="global-stats" id="global-display">0 / 5000 ml</div>
+
     <div class="top-bar">
         <button class="icon-btn" id="open-settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
     </div>
 
     <div id="settings-modal">
         <div class="settings-box">
-            <h2 style="margin-top:0">Στόχος Νερού</h2>
-            <div id="goal-val" style="font-size: 28px; color: #0a84ff; font-weight: bold;">5</div>
-            <input type="range" id="goal-slider" min="1" max="5" step="1" value="5">
+            <h2>Στόχος (ml)</h2>
+            <div id="goal-val" style="font-size: 32px; color: #0a84ff; font-weight: 800;">5000</div>
+            <input type="range" id="goal-slider" min="1050" max="5250" step="350" value="5000">
             <button class="save-btn" id="save-settings">Αποθήκευση</button>
         </div>
     </div>
 
     <div id="swipe-container">
         <div class="screen">
-            <div class="title-container">
-                <h1 id="title-bottles">Στόχος: 5 Λίτρα</h1>
-                <p class="subtitle">Άγγιξε ένα μπουκάλι (1L)</p>
-            </div>
+            <div class="title-container"><h1>Μπουκάλια (1L)</h1><p class="subtitle">Πλήρης συγχρονισμός ανά 350ml</p></div>
             <div class="bottle-grid" id="bottle-grid"></div>
         </div>
-
         <div class="screen">
-            <div class="title-container">
-                <h1>Ποτήρια (350ml)</h1>
-                <p class="subtitle">Άγγιξε ένα ποτήρι</p>
-            </div>
+            <div class="title-container"><h1>Ποτήρια (350ml)</h1><p class="subtitle">Άγγιξε ένα ποτήρι</p></div>
             <div class="glass-grid" id="glass-grid"></div>
         </div>
-
         <div class="screen">
-            <div class="title-container">
-                <h1>Κανάτα</h1>
-                <p class="subtitle">Σύρε τον δοσομετρητή (±350ml)</p>
-            </div>
+            <div class="title-container"><h1>Κανάτα</h1><p class="subtitle">Σύρε τον δοσομετρητή</p></div>
             <div class="pitcher-container">
                 <div id="pitcher-wrap">
                     <svg class="svg-obj" viewBox="0 0 200 300">
@@ -167,96 +154,111 @@
             <div class="drag-handle"></div>
             <div class="tab-label">Ιστορικό</div>
         </div>
-        <div class="history-content">
-            <ul id="history-list" style="list-style: none; padding: 0;"></ul>
-        </div>
+        <div class="history-content" id="history-list-container" style="padding: 0 30px 40px;"></div>
     </div>
 
     <script>
-        let goalLiters = parseInt(localStorage.getItem('waterGoal')) || 5;
+        const STEP = 350;
+        let goalMl = parseInt(localStorage.getItem('waterGoal')) || 5250;
         let history = JSON.parse(localStorage.getItem('waterHistory')) || [];
         const getToday = () => new Date().toLocaleDateString('el-GR');
         let today = getToday();
         let todayRecord = history.find(h => h.date === today);
 
         if (!todayRecord) {
-            todayRecord = { date: today, bottleStates: Array(5).fill(false), glassStates: Array(15).fill(false), pitcherExtraMl: 0 };
+            todayRecord = { date: today, ml: 0 };
             history.unshift(todayRecord);
         }
-
-        function calculateTotalMl() {
-            let bMl = todayRecord.bottleStates.filter(s => s).length * 1000;
-            let gMl = todayRecord.glassStates.filter(s => s).length * 350;
-            return bMl + gMl + todayRecord.pitcherExtraMl;
-        }
+        let currentMl = todayRecord.ml || 0;
 
         function saveData() {
-            localStorage.setItem('waterGoal', goalLiters);
+            todayRecord.ml = currentMl;
+            localStorage.setItem('waterGoal', goalMl);
             localStorage.setItem('waterHistory', JSON.stringify(history));
         }
 
         function initUI() {
-            document.getElementById('title-bottles').innerText = `Στόχος: ${goalLiters} Λίτρα`;
-            
+            // Bottles
             const bGrid = document.getElementById('bottle-grid');
             bGrid.innerHTML = '';
-            for (let i = 0; i < goalLiters; i++) {
+            let numBottles = Math.ceil(goalMl / 1000);
+            for (let i = 0; i < numBottles; i++) {
                 const wrap = document.createElement('div');
-                wrap.className = 'bottle-wrap' + (goalLiters % 2 !== 0 && i === goalLiters - 1 ? ' center-odd' : '');
-                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200"><g clip-path="url(#bottleMask)"><rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/></g><path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="120" fill="rgba(255,255,255,0.7)" font-size="20" font-weight="bold" text-anchor="middle">1L</text></svg>`;
+                wrap.className = 'bottle-wrap' + (numBottles % 2 !== 0 && i === numBottles - 1 ? ' center-odd' : '');
+                wrap.innerHTML = `
+                    <svg class="svg-obj" viewBox="0 0 100 200">
+                        <g clip-path="url(#bottleMask)">
+                            <rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/>
+                        </g>
+                        <rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/>
+                        <path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/>
+                        <text x="50" y="125" fill="rgba(255,255,255,0.7)" font-size="18" font-weight="bold" text-anchor="middle">1L</text>
+                    </svg>`;
                 wrap.onclick = () => {
-                    todayRecord.bottleStates[i] = !todayRecord.bottleStates[i];
-                    if(todayRecord.bottleStates[i]) createSplash(wrap);
+                    let target = (i + 1) * 1050; // Προσέγγιση 1L με βήμα 350
+                    currentMl = (currentMl >= target) ? target - 1050 : target;
+                    if(currentMl < 0) currentMl = 0;
+                    if(currentMl >= target) createSplash(wrap);
                     saveData(); updateUI();
                 };
                 bGrid.appendChild(wrap);
             }
 
+            // Glasses
             const gGrid = document.getElementById('glass-grid');
             gGrid.innerHTML = '';
-            let maxG = Math.ceil((goalLiters * 1000) / 350);
+            let maxG = Math.ceil(goalMl / STEP);
             for (let i = 0; i < maxG; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'glass-wrap';
-                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 150"><g clip-path="url(#glassMask)"><rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)"/></g><path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="90" fill="rgba(255,255,255,0.7)" font-size="16" font-weight="bold" text-anchor="middle">350</text></svg>`;
+                wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 150"><g clip-path="url(#glassMask)"><rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)"/></g><path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="90" fill="rgba(255,255,255,0.6)" font-size="14" font-weight="bold" text-anchor="middle">350</text></svg>`;
                 wrap.onclick = () => {
-                    todayRecord.glassStates[i] = !todayRecord.glassStates[i];
+                    let target = (i + 1) * STEP;
+                    currentMl = (currentMl >= target) ? target - STEP : target;
                     saveData(); updateUI();
                 };
                 gGrid.appendChild(wrap);
             }
 
+            // Pitcher Ticks
             const ticks = document.getElementById('pitcher-drag-zone');
             ticks.innerHTML = '';
-            for(let i=0; i<=goalLiters; i++) {
+            let numTicks = Math.floor(goalMl / 1000);
+            for(let i=0; i<=numTicks; i++) {
                 const t = document.createElement('div'); t.className = 'tick'; t.innerText = i+'L';
                 ticks.appendChild(t);
             }
         }
 
         function updateUI() {
-            const total = calculateTotalMl();
+            // Global Header Stats
+            document.getElementById('global-display').innerText = `${currentMl} / ${goalMl} ml`;
+
+            // Sync Bottles (Linear Fill)
             document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => {
-                rect.style.transform = todayRecord.bottleStates[i] ? 'translateY(0px)' : 'translateY(200px)';
+                let bottleFill = Math.max(0, Math.min(1000, currentMl - (i * 1000)));
+                rect.style.transform = `translateY(${200 - (bottleFill/1000 * 200)}px)`;
             });
+
+            // Sync Glasses (Linear Fill)
             document.querySelectorAll('#glass-grid .water-fill').forEach((rect, i) => {
-                rect.style.transform = todayRecord.glassStates[i] ? 'translateY(0px)' : 'translateY(150px)';
+                let glassFill = Math.max(0, Math.min(STEP, currentMl - (i * STEP)));
+                rect.style.transform = `translateY(${150 - (glassFill/STEP * 150)}px)`;
             });
 
-            let pPercent = Math.min(1, total / (goalLiters * 1000));
+            // Sync Pitcher
+            let pPercent = Math.min(1, currentMl / goalMl);
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 300)}px)`;
-            // Εμφάνιση ml μέσα στην κανάτα
-            document.getElementById('pitcher-text').innerText = total + ' ml';
+            document.getElementById('pitcher-text').innerText = currentMl + ' ml';
 
-            const list = document.getElementById('history-list');
-            list.innerHTML = '';
+            // History
+            const container = document.getElementById('history-list-container');
+            container.innerHTML = '';
             history.forEach(h => {
-                let sum = (h.ml || 0);
-                if(h.bottleStates) sum = (h.bottleStates.filter(s=>s).length * 1000) + (h.glassStates.filter(s=>s).length * 350) + (h.pitcherExtraMl || 0);
-                const li = document.createElement('li');
-                li.style.cssText = "display:flex; justify-content:space-between; padding:18px 0; border-bottom:1px solid #2c2c2e; font-size:18px;";
-                li.innerHTML = `<span>${h.date === today ? 'Σήμερα' : h.date}</span><span style="color:#0a84ff; font-weight:bold">${(sum/1000).toFixed(1)} L</span>`;
-                list.appendChild(li);
+                const div = document.createElement('div');
+                div.style.cssText = "display:flex; justify-content:space-between; padding:18px 0; border-bottom:1px solid #2c2c2e; font-size:17px;";
+                div.innerHTML = `<span>${h.date === today ? 'Σήμερα' : h.date}</span><span style="color:#0a84ff; font-weight:bold">${h.ml} ml</span>`;
+                container.appendChild(div);
             });
         }
 
@@ -273,34 +275,30 @@
             }, 350);
         }
 
-        // --- Improved Pitcher Drag Logic (Moved to Drag Zone) ---
-        let isDrag = false, sY = 0, startExtra = 0;
+        // Drag Pitcher Zone
+        let isDrag = false, sY = 0, startMlValue = 0;
         const dragZone = document.getElementById('pitcher-drag-zone');
-        dragZone.ontouchstart = e => { isDrag = true; sY = e.touches[0].clientY; startExtra = todayRecord.pitcherExtraMl; };
+        dragZone.ontouchstart = e => { isDrag = true; sY = e.touches[0].clientY; startMlValue = currentMl; };
         dragZone.ontouchmove = e => {
             if(!isDrag) return;
-            let delta = Math.round((sY - e.touches[0].clientY) / 25);
-            todayRecord.pitcherExtraMl = startExtra + (delta * 350);
+            let deltaSteps = Math.round((sY - e.touches[0].clientY) / 30);
+            currentMl = Math.max(0, startMlValue + (deltaSteps * STEP));
             updateUI();
         };
         dragZone.ontouchend = () => { isDrag = false; saveData(); };
 
+        // Settings Logic
         const mod = document.getElementById('settings-modal'), sli = document.getElementById('goal-slider'), val = document.getElementById('goal-val');
-        document.getElementById('open-settings').onclick = () => { sli.value = goalLiters; val.innerText = goalLiters; mod.classList.add('open'); };
+        document.getElementById('open-settings').onclick = () => { sli.value = goalMl; val.innerText = goalMl; mod.classList.add('open'); };
         sli.oninput = e => val.innerText = e.target.value;
         document.getElementById('save-settings').onclick = () => {
-            goalLiters = parseInt(sli.value);
-            todayRecord.bottleStates = todayRecord.bottleStates.slice(0, goalLiters);
-            while(todayRecord.bottleStates.length < goalLiters) todayRecord.bottleStates.push(false);
-            saveData(); mod.classList.remove('open'); initUI(); updateUI();
+            goalMl = parseInt(sli.value); saveData(); mod.classList.remove('open'); initUI(); updateUI();
         };
 
         const sc = document.getElementById('swipe-container'), ds = document.querySelectorAll('.dot');
         sc.onscroll = () => { let i = Math.round(sc.scrollLeft / window.innerWidth); ds.forEach((d, k) => d.classList.toggle('active', k === i)); };
 
-        // --- Improved History Swipe (Tab-based) ---
-        let sheet = document.getElementById('history-sheet');
-        let hSY = 0;
+        let sheet = document.getElementById('history-sheet'), hSY = 0;
         document.getElementById('history-tab').ontouchstart = e => hSY = e.touches[0].clientY;
         document.getElementById('history-tab').ontouchend = e => {
             let endY = e.changedTouches[0].clientY;
