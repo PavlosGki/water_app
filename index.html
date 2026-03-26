@@ -26,11 +26,7 @@
             white-space: nowrap; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* SIC BLINK EFFECT */
-        .goal-blink {
-            animation: blink-anim 0.4s ease-out;
-        }
-
+        .goal-blink { animation: blink-anim 0.4s ease-out; }
         @keyframes blink-anim {
             0% { background: rgba(10, 132, 255, 0.15); transform: translateX(-50%) scale(1); }
             30% { background: #ffffff; color: #000000; box-shadow: 0 0 30px #ffffff; transform: translateX(-50%) scale(1.15); border-color: #ffffff; }
@@ -69,7 +65,6 @@
         h1 { margin: 0; font-size: 22px; font-weight: 700; }
         .subtitle { color: #8e8e93; font-size: 13px; margin-top: 5px; }
 
-        /* Weekly Status Styles Updated */
         .weekly-grid { display: flex; flex-direction: column; width: 90%; gap: 15px; margin-top: 60px; }
         .week-row { display: flex; align-items: center; gap: 12px; width: 100%; }
         .week-label { width: 35px; font-size: 11px; color: #8e8e93; font-weight: 700; text-transform: uppercase; }
@@ -94,10 +89,7 @@
         .tick.major::after { width: 18px; height: 2px; background: #636366; }
 
         .svg-obj { width: 100%; height: 100%; display: block; }
-
-        .water-fill { 
-            transition: transform 0.5s ease-out; 
-        }
+        .water-fill { transition: transform 0.5s ease-out; }
 
         .dots { position: fixed; bottom: 85px; width: 100vw; display: flex; justify-content: center; gap: 8px; z-index: 5; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #48484a; transition: 0.3s; }
@@ -210,15 +202,31 @@
 
         const getToday = () => new Date().toLocaleDateString('el-GR');
         let today = getToday();
+        
         let todayRecord = history.find(h => h.date === today);
-        if (!todayRecord) { todayRecord = { date: today, ml: 0, goal: goalMl }; history.unshift(todayRecord); }
+        if (!todayRecord) { 
+            todayRecord = { date: today, ml: 0, goal: goalMl, bottles: [], glasses: [], pitcher: 0 }; 
+            history.unshift(todayRecord); 
+        }
+        
+        // Init arrays if older data structure exists
+        if (!todayRecord.bottles) todayRecord.bottles = [];
+        if (!todayRecord.glasses) todayRecord.glasses = [];
+        if (!todayRecord.pitcher) todayRecord.pitcher = 0;
+
         let currentMl = todayRecord.ml || 0;
 
         // Elegant Sound Engine
-        let audioCtx;
         function playSuccessSound() {
             const audio = new Audio('success.mp3'); // Το όνομα του αρχείου σου
             audio.play();
+        }
+
+        function calcTotal() {
+            let bMl = todayRecord.bottles.reduce((acc, val) => acc + (val ? bStep : 0), 0);
+            let gMl = todayRecord.glasses.reduce((acc, val) => acc + (val ? gStep : 0), 0);
+            let pMl = todayRecord.pitcher || 0;
+            return bMl + gMl + pMl;
         }
 
         function checkGoalBlink(prevMl) {
@@ -246,35 +254,42 @@
 
             document.getElementById('bottle-title').innerText = `Μπουκάλια (${bStep}ml)`;
             document.getElementById('glass-title').innerText = `Ποτήρια (${gStep}ml)`;
-            const bGrid = document.getElementById('bottle-grid'); bGrid.innerHTML = '';
+            
+            // Re-sync bottle array length with setting
             let numB = Math.ceil(goalMl / bStep);
+            todayRecord.bottles.length = numB;
+            for(let i=0; i<numB; i++) if(todayRecord.bottles[i] === undefined) todayRecord.bottles[i] = false;
+
+            const bGrid = document.getElementById('bottle-grid'); bGrid.innerHTML = '';
             let bScale = numB > 3 ? 0.9 : 1.1; 
             for (let i = 0; i < numB; i++) {
                 const wrap = document.createElement('div'); wrap.className = 'bottle-wrap';
                 wrap.style.width = (75 * bScale) + 'px'; wrap.style.height = (150 * bScale) + 'px';
                 wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 200"><g clip-path="url(#bottleMask)"><rect class="water-fill" x="0" y="0" width="100" height="200" fill="#0a84ff" style="transform: translateY(200px)"/></g><rect x="40" y="2" width="20" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><path d="M 35 30 C 35 15, 40 15, 45 10 L 55 10 C 60 15, 65 15, 65 30 L 75 60 L 75 180 C 75 190, 65 195, 50 195 C 35 195, 25 190, 25 180 L 25 60 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="115" fill="white" font-size="28" font-weight="900" text-anchor="middle" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5)">${i+1}</text></svg>`;
                 wrap.onclick = () => {
-                    let prev = currentMl;
-                    let threshold = (i + 1) * bStep;
-                    if (currentMl >= threshold) currentMl = Math.max(0, threshold - bStep);
-                    else currentMl = threshold;
+                    let prev = calcTotal();
+                    todayRecord.bottles[i] = !todayRecord.bottles[i];
+                    currentMl = calcTotal();
                     checkGoalBlink(prev); saveData(); updateUI();
                 };
                 bGrid.appendChild(wrap);
             }
 
-            const gGrid = document.getElementById('glass-grid'); gGrid.innerHTML = '';
+            // Re-sync glass array length with setting
             let numG = Math.ceil(goalMl / gStep);
+            todayRecord.glasses.length = numG;
+            for(let i=0; i<numG; i++) if(todayRecord.glasses[i] === undefined) todayRecord.glasses[i] = false;
+
+            const gGrid = document.getElementById('glass-grid'); gGrid.innerHTML = '';
             let gScale = numG > 9 ? 0.8 : 1.0; 
             for (let i = 0; i < numG; i++) {
                 const wrap = document.createElement('div'); wrap.className = 'glass-wrap';
                 wrap.style.width = (65 * gScale) + 'px'; wrap.style.height = (90 * gScale) + 'px';
                 wrap.innerHTML = `<svg class="svg-obj" viewBox="0 0 100 150"><g clip-path="url(#glassMask)"><rect class="water-fill" x="0" y="0" width="100" height="150" fill="#0a84ff" style="transform: translateY(150px)"/></g><path d="M 15 10 L 85 10 L 75 140 C 73 145, 68 150, 50 150 C 32 150, 27 145, 25 140 Z" fill="none" stroke="#ffffff" stroke-width="4"/><text x="50" y="95" fill="white" font-size="32" font-weight="900" text-anchor="middle" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5)">${i+1}</text></svg>`;
                 wrap.onclick = () => {
-                    let prev = currentMl;
-                    let threshold = (i + 1) * gStep;
-                    if (currentMl >= threshold) currentMl = Math.max(0, threshold - gStep);
-                    else currentMl = threshold;
+                    let prev = calcTotal();
+                    todayRecord.glasses[i] = !todayRecord.glasses[i];
+                    currentMl = calcTotal();
                     checkGoalBlink(prev); saveData(); updateUI();
                 };
                 gGrid.appendChild(wrap);
@@ -286,6 +301,8 @@
                 const isMajor = (i % 500 === 0); const t = document.createElement('div'); t.className = 'tick' + (isMajor ? ' major' : ''); 
                 if (isMajor) t.innerText = i >= 1000 ? (i/1000)+'L' : i; dragZone.appendChild(t);
             }
+            
+            currentMl = calcTotal();
             updateWeekly();
         }
 
@@ -315,18 +332,26 @@
         }
 
         function updateUI() {
-            const total = Math.max(0, currentMl);
-            document.getElementById('global-display').innerText = `${total} / ${goalMl} ml`;
-            document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => { let fill = Math.max(0, Math.min(bStep, total - (i * bStep))); rect.style.transform = `translateY(${200 - (fill/bStep * 200)}px)`; });
-            document.querySelectorAll('#glass-grid .water-fill').forEach((rect, i) => { let fill = Math.max(0, Math.min(gStep, total - (i * gStep))); rect.style.transform = `translateY(${150 - (fill/gStep * 150)}px)`; });
+            const display = document.getElementById('global-display');
+            display.innerText = `${currentMl} / ${goalMl} ml`;
             
-            let pPercent = Math.min(1, total / goalMl);
+            document.querySelectorAll('#bottle-grid .water-fill').forEach((rect, i) => { 
+                rect.style.transform = todayRecord.bottles[i] ? `translateY(0px)` : `translateY(200px)`; 
+            });
+            document.querySelectorAll('#glass-grid .water-fill').forEach((rect, i) => { 
+                rect.style.transform = todayRecord.glasses[i] ? `translateY(0px)` : `translateY(150px)`; 
+            });
+            
+            let pPercent = Math.min(1, (todayRecord.pitcher || 0) / goalMl);
             document.getElementById('pitcher-fill').style.transform = `translateY(${300 - (pPercent * 270)}px)`;
-            document.getElementById('pitcher-text').innerText = total + ' ml';
+            document.getElementById('pitcher-text').innerText = (todayRecord.pitcher || 0) + ' ml';
 
             const line = document.getElementById('indicator-line'); const zone = document.getElementById('pitcher-drag-zone');
-            const padding = 30; const availableHeight = zone.clientHeight - (padding * 2);
-            const bottomPos = padding + (pPercent * availableHeight); line.style.bottom = bottomPos + 'px';
+            if (line && zone) {
+                const padding = 30; const availableHeight = zone.clientHeight - (padding * 2);
+                const bottomPos = padding + (pPercent * availableHeight); line.style.bottom = bottomPos + 'px';
+            }
+            
             const container = document.getElementById('history-list-container'); container.innerHTML = '';
             history.forEach(h => {
                 const div = document.createElement('div'); div.style.cssText = "display:flex; justify-content:space-between; padding:18px 0; border-bottom:1px solid #2c2c2e; font-size:17px;";
@@ -338,11 +363,12 @@
         let isDrag = false; const dragZone = document.getElementById('pitcher-drag-zone');
         dragZone.ontouchstart = e => { isDrag = true; handleDrag(e); }; dragZone.ontouchmove = e => { if(isDrag) handleDrag(e); }; dragZone.ontouchend = () => { isDrag = false; saveData(); };
         function handleDrag(e) {
-            let prev = currentMl;
+            let prev = calcTotal();
             const rect = dragZone.getBoundingClientRect(); const padding = 30;
             const y = e.touches[0].clientY - rect.top - padding; const availableHeight = rect.height - (padding * 2);
             const percentage = 1 - (y / availableHeight); const clamped = Math.max(0, Math.min(1, percentage));
-            currentMl = Math.round((clamped * goalMl) / 50) * 50; 
+            todayRecord.pitcher = Math.round((clamped * goalMl) / 50) * 50; 
+            currentMl = calcTotal();
             checkGoalBlink(prev); updateUI();
         }
 
